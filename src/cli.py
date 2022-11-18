@@ -14,11 +14,11 @@ This file contain the main function to run.
 import sys
 
 # import constants
-import config.constants as constants
+import config.config as config
 
 def print_help() -> None:
     """! A function that print help."""
-    print(f"Help of {constants.APP_NAME} Version {constants.VERSION}\n")
+    print(f"Help of {config.APP_NAME} Version {config.VERSION}\n")
     print("-h or -- help to print help.")
     print("-d '{path}' list all the vci and vcf files present in the specified directory.")
     print("-i '{path}' show the content of a specific vci or vsf file.")
