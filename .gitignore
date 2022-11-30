@@ -1,6 +1,7 @@
 # ignored files and folders
 
 # folders
+.idea
 venv
 .github
 __pycache__

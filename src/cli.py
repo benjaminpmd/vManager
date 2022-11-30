@@ -6,18 +6,47 @@ This file contain the main function to run.
 @since  2022.04.11
 """
 
-#!/usr/bin/env python
+# !/usr/bin/env python
 
 # -*- coding: utf-8 -*-
 
+import os
 # importing library to read the parameters passed by the user
 import sys
-import os
 
 # import constants
 import config.config as config
 from manager.calendar_manager import CalendarManager
-from manager.card_manager import CardManager
+from vcard.vcard_manager import VCardManager
+
+
+def print_card_content(path: str):
+    manager = VCardManager(path)
+    print(manager.get_vcard())
+    # for event in manager.get_formatted_events():
+    #    print("\n=> " + event["summary"])
+    #    print("     > Date:            " + str(event["timestamp"]))
+    #    print("     > Starting date:   " + str(event["start_date"]))
+    #    print("     > End date:        " + str(event["end_date"]))
+    #    print("     > Creation date:   " + str(event["creation_date"]))
+    #    if (event["modified_date"]):
+    #        print("     >" + str(event["modified_date"]))
+    #    print("     > Repeats " + (' '.join(event["rule"]["repeat"])) + ", ends on " + str(event["rule"]["UNTIL"]))
+    #    print("\n")
+
+
+def print_calendar_content(path: str):
+    manager = CalendarManager(path)
+    for event in manager.get_formatted_events():
+        print("\n=> " + event["summary"])
+        print("     > Date:            " + str(event["timestamp"]))
+        print("     > Starting date:   " + str(event["start_date"]))
+        print("     > End date:        " + str(event["end_date"]))
+        print("     > Creation date:   " + str(event["creation_date"]))
+        if event["modified_date"]:
+            print("     >" + str(event["modified_date"]))
+        print("     > Repeats " + (' '.join(event["rule"]["repeat"])) + ", ends on " + str(event["rule"]["until"]))
+        print("\n")
 
 
 class Cli:
@@ -29,8 +58,10 @@ class Cli:
         """! Method that list all the .ics and all .vcf files present in a given directory.
 
         @param path the path of the directory to explore.
-        @param files the optionally dictionary to use to store listed files. It should not be given when calling the function.
-        @return a dictionary of files with their parent directory as key.
+        @param files the optional dictionary to use to store listed files.
+            It should not be given when calling the function.
+        @return a dictionary of files with their parent
+        directory as key.
         """
 
         # fetch the content of the directory
@@ -42,24 +73,24 @@ class Cli:
             # get the relative path of the item
             item_path: str = os.path.join(path, item)
 
-            # if this is a file and it ends with .ics or .vcf
-            if (os.path.isfile(item_path) and (item_path.endswith(".ics") or item_path.endswith(".vcf"))):
+            # if this is a file, and it ends with .ics or .vcf
+            if os.path.isfile(item_path) and (item_path.endswith(".ics") or item_path.endswith(".vcf")):
 
                 # creating an entry in the dictionary with the path if it does not exist
-                if (files.get(path) == None):
+                if files.get(path) is None:
                     files[path]: list[str] = []
 
                 # append the file to the list
                 files[path].append(item)
 
             # else if the folder is a directory, then we call recursively the function to get the new dictionary
-            elif (os.path.isdir(item_path)):
+            elif os.path.isdir(item_path):
                 files = self.dir_explorer(item_path, files)
 
         # return all the files
         return files
 
-    def print_dir_explorer(self, path: str) -> dict[str, list[str]]:
+    def print_dir_explorer(self, path: str) -> None:
         """! Method that format the output of the dir_explorer function for display in the cli.
 
         @param path the path to pass to the dir_explorer function (the path to explore).
@@ -75,32 +106,6 @@ class Cli:
             for value in files.get(key):
                 print(f"     => {value}")
         print("\n ")
-
-    def print_calendar_content(self, path: str):
-        manager = CalendarManager(path)
-        for event in manager.get_formatted_events():
-            print("\n=> " + event["summary"])
-            print("     > Date:            " + str(event["timestamp"]))
-            print("     > Starting date:   " + str(event["start_date"]))
-            print("     > End date:        " + str(event["end_date"]))
-            print("     > Creation date:   " + str(event["creation_date"]))
-            if (event["modified_date"]):
-                print("     >" + str(event["modified_date"]))
-            print("     > Repeats " + (' '.join(event["rule"]["repeat"])) + ", ends on " + str(event["rule"]["until"]))
-            print("\n")
-
-    def print_card_content(self, path: str):
-        manager = CardManager(path)
-        #for event in manager.get_formatted_events():
-        #    print("\n=> " + event["summary"])
-        #    print("     > Date:            " + str(event["timestamp"]))
-        #    print("     > Starting date:   " + str(event["start_date"]))
-        #    print("     > End date:        " + str(event["end_date"]))
-        #    print("     > Creation date:   " + str(event["creation_date"]))
-        #    if (event["modified_date"]):
-        #        print("     >" + str(event["modified_date"]))
-        #    print("     > Repeats " + (' '.join(event["rule"]["repeat"])) + ", ends on " + str(event["rule"]["UNTIL"]))
-        #    print("\n")
 
     def print_help(self) -> None:
         """! A function that print help."""
@@ -124,31 +129,31 @@ def main(argv: list) -> None:
     cli: Cli = Cli(config.APP_NAME, config.VERSION)
 
     # getting the number of parameters
-    # parameters of index 0 will be the call to the script
+    #  of index 0 will be the call to the script
     argc: int = len(argv)
 
-    # calling the different methods depending of the parameters passed
+    # calling the different methods depending on the parameters passed
     match argc:
         case 1:
             # if there is only one argument, then it's the call to the script
             print(
-                "It seems you forgot parameters, use -h or --help for more informations.")
+                "It seems you forgot parameters, use -h or --help for more information's.")
         case 2:
-            if ((argv[1] == "-h") or (argv[1] == "--help")):
+            if (argv[1] == "-h") or (argv[1] == "--help"):
                 cli.print_help()
             else:
                 print(
                     "It seems your parameters are not correct, use -h or --help for more informations.")
         case 3:
-            if (argv[1] == "-d"):
+            if argv[1] == "-d":
                 cli.print_dir_explorer(argv[2])
-            elif (argv[1] == "-i"):
-                
-                if (argv[2].endswith(".ics")):
-                    cli.print_calendar_content(argv[2])
-                
-                elif (argv[2].endswith(".vcf")):
-                    cli.print_card_content(argv[2])
+            elif argv[1] == "-i":
+
+                if argv[2].endswith(".ics"):
+                    print_calendar_content(argv[2])
+
+                elif argv[2].endswith(".vcf"):
+                    print_card_content(argv[2])
 
                 else:
                     print("Incorrect file input.")
