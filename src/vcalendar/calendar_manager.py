@@ -11,7 +11,7 @@ class CalendarManager:
 
             
     
-    def get_formatted_events(self):
+    def get_formatted_events(self) -> None:
         events: list[dict] = []
         
         for component in self.calendar.walk("VEVENT"):
@@ -34,3 +34,32 @@ class CalendarManager:
             events.append(event)
 
         return events
+
+
+    def export_csv(self, output_path: str) -> None:
+
+        events = self.get_formatted_events()
+
+        with open(output_path, 'w') as f:
+            f.write("summary,start date,end date,creation date\n")
+
+            for event in events:
+                summary: str = event["summary"]
+                start_time = event["start_date"]
+                end_time = event["end_date"]
+                creation_date = event["creation_date"]
+                f.write(f"{summary},{start_time},{end_time},{creation_date}\n")
+
+    def export_html(self, output_path: str) -> None:
+        events = self.get_formatted_events()
+
+        with open(output_path, 'w') as f:
+            for event in events:
+                f.write("<div class=\"vevent\">\n")
+                summary: str = event["summary"]
+                start_time = event["start_date"]
+                end_time = event["end_date"]
+                creation_date = event["creation_date"]
+                f.write(f"\t<span class=\"summary\">{summary}</span>\n\t<span class=\"dtstart\">{start_time}</span>\n\t<span class=\"dtend\">{end_time}</span>\n\t<span class=\"created\">{creation_date}</span>\n")
+                f.write("</div>\n")
+            

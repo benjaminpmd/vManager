@@ -16,23 +16,30 @@ import sys
 
 # import constants
 import config.config as config
-from manager.calendar_manager import CalendarManager
+from vcalendar.calendar_manager import CalendarManager
+from vcard.vcard import VCard
 from vcard.vcard_manager import VCardManager
 
 
 def print_card_content(path: str):
     manager = VCardManager(path)
-    print(manager.get_vcard())
-    # for event in manager.get_formatted_events():
-    #    print("\n=> " + event["summary"])
-    #    print("     > Date:            " + str(event["timestamp"]))
-    #    print("     > Starting date:   " + str(event["start_date"]))
-    #    print("     > End date:        " + str(event["end_date"]))
-    #    print("     > Creation date:   " + str(event["creation_date"]))
-    #    if (event["modified_date"]):
-    #        print("     >" + str(event["modified_date"]))
-    #    print("     > Repeats " + (' '.join(event["rule"]["repeat"])) + ", ends on " + str(event["rule"]["UNTIL"]))
-    #    print("\n")
+    vcard: VCard = manager.get_vcard()
+
+    print(f"    > Name: {' '.join(vcard.get_names())}")
+    print(f"    > Full Name: {vcard.get_full_name()}")
+    print(f"    > Title: {vcard.get_title()}")
+    print(f"    > Organizations: {', '.join(vcard.get_org())}")
+    
+    for address in vcard.get_addresses():
+        print(f"    > Address of types {', '.join(address.get_address_types())}: {' '.join(address.get_address_elements())}")
+
+    for email in vcard.get_emails():
+        print(f"    > Email of types {', '.join(email.get_email_types())}: {email.get_email_address()}")
+    
+    for phone in vcard.get_phones():
+        print(f"    > Phone of types {', '.join(phone.get_phone_types())}: {phone.get_phone_number()}")
+
+    print(f"    > Note: {vcard.get_note()}")
 
 
 def print_calendar_content(path: str):
@@ -48,6 +55,39 @@ def print_calendar_content(path: str):
         print("     > Repeats " + (' '.join(event["rule"]["repeat"])) + ", ends on " + str(event["rule"]["until"]))
         print("\n")
 
+def export_file(input_path: str, output_path: str):
+   
+    if input_path.endswith('.vcf'):
+        manager: VCardManager = VCardManager(input_path)
+        
+        if output_path.endswith('.csv'):
+            manager.export_csv(output_path)
+            return "The file has been converted"
+        
+        elif output_path.endswith('.html'):
+            manager.export_html(output_path)
+            return "The file has been converted"
+        
+        else:
+            return "Incorrect file output"
+    
+    elif input_path.endswith('.ics'):
+        manager: CalendarManager = CalendarManager(input_path)
+        
+        if output_path.endswith('.csv'):
+            manager.export_csv(output_path)
+            return "The file has been converted"
+        
+        elif output_path.endswith('.html'):
+            manager.export_html(output_path)
+            return "The file has been converted"
+        
+        else:
+            return "Incorrect file output"
+    
+    else:
+        return "Incorrect file input"
+            
 
 class Cli:
     def __init__(self, app_name: str, app_version: str) -> None:
@@ -157,6 +197,9 @@ def main(argv: list) -> None:
 
                 else:
                     print("Incorrect file input.")
+        case 5:
+            if (argv[1] == "-i") and (argv[3] == "-h"):
+                print(export_file(argv[2], argv[4]))
         case other:
             pass
 

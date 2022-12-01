@@ -19,7 +19,7 @@ class Email:
 
         @return the type of the phone.
         """
-        return self.__email_type
+        return self.__email_types
 
     def get_email_address(self) -> str:
         """! Return the number of the phone.

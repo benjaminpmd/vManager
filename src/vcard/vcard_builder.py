@@ -1,7 +1,7 @@
 from vcard.vcard import VCard
 from vcard.elements.email import Email
 from vcard.elements.phone import Phone
-
+from vcard.elements.address import Address
 
 class VCardBuilder:
     def __init__(self) -> None:
@@ -68,7 +68,13 @@ class VCardBuilder:
                         self.__vcard.add_phone(phone)
 
                     case 'ADR':
-                        pass
+                        address: Address = Address()
+                        for element in elements:
+                            if element.lower().startswith('type'):
+                                address.add_address_type(element.split('=')[1].upper())
+                            else:
+                                address.add_address_element(element)
+                        self.__vcard.add_address(address)
 
                     case 'NOTE':
                         self.__vcard.set_note(elements[0])
