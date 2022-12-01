@@ -14,7 +14,7 @@ class VCard:
         self.__phones: list[Phone] = []
         self.__note: str = ''
         self.__categories: list[str] = []
-    
+
     def __str__(self) -> str:
         return f"[names = {self.__names}, \nfull_name = {self.__full_name}, \norg = {self.__org}, \ntitle = {self.__title}, \naddresses = {self.__addresses}, \nemails = {self.__emails} \nphones = {self.__phones} \nnote = {self.__note} \ncategories = {self.__categories}]"
 
@@ -57,7 +57,7 @@ class VCard:
     def get_phones(self) -> list[Phone]:
         return self.__phones
     
-    def set_phones(self, phone: Phone) -> None:
+    def add_phone(self, phone: Phone) -> None:
         self.__phones.append(phone)
 
     def get_note(self) -> str:

@@ -1,4 +1,6 @@
 from vcard.vcard import VCard
+from vcard.elements.email import Email
+from vcard.elements.phone import Phone
 
 
 class VCardBuilder:
@@ -10,22 +12,71 @@ class VCardBuilder:
 
         with open(path, 'r') as f:
             for line in f:
+                
                 line = line.replace("\n", '')
-                if line.startswith("N:"):
+                
+                elements: list[str] = ['']
+                
+                for char in line:
+                    if (char == ';') or (char == ':'):
+                        elements.append('')
+                    else:
+                        elements[len(elements)-1] += char 
+                
+                for i in range(len(elements)-1):
+                    if elements[i] == '':
+                        elements.pop(i)
+                
+                title: str = elements[0]
+
+                elements.remove(elements[0])
+            
+                
+                match title:
+                    case 'N':
+                        for element in elements:
+                            if element != '':
+                                self.__vcard.add_name(element)
+
+                    case 'FN':
+                        self.__vcard.set_full_name(elements[0])
+
+                    case 'ORG':
+                        for element in elements:
+                            if element != '':
+                                self.__vcard.add_org(element)
+                
+                    case 'TITLE':
+                        self.__vcard.set_title(elements[0])
+                
+                    case 'EMAIL':
+                        email: Email = Email()
+                        for element in elements:
+                            if element.lower().startswith('type'):
+                                email.add_email_type(element.split('=')[1].upper())
+                            else:
+                                email.set_email_address(element)
+                        self.__vcard.add_email(email)
                     
-                    split: list[str] = line.split(':')[1].split(";")
-                    for name in split:
-                        if name != '':
-                            self.__vcard.add_name(name)
+                    case 'TEL':
+                        phone: Phone = Phone()
+                        for element in elements:
+                            if element.lower().startswith('type'):
+                                phone.add_phone_type(element.split('=')[1].upper())
+                            else:
+                                phone.set_phone_number(element)
+                        self.__vcard.add_phone(phone)
 
-                elif line.startswith("FN:"):
-                    self.__vcard.set_full_name(line.split(':')[1])
+                    case 'ADR':
+                        pass
 
-                elif line.startswith("ORG:"):
-                    split: list[str] = line.split(':')[1].split(";")
-                    for org in split:
-                        if org != '':
-                            self.__vcard.add_org(org)
+                    case 'NOTE':
+                        self.__vcard.set_note(elements[0])
 
-        print
+                    case 'CATEGORIES':
+                        categories: list[str] = elements[0].split(',')
+                        for category in categories:
+                            if category != '':
+                                self.__vcard.add_category(category)
+
         return self.__vcard

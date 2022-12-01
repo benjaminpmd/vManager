@@ -1,5 +1,5 @@
 class Address:
-    def __init__(self, address_type: str, street: str, city: str, region: str, postal_code: str, country: str) -> None:
+    def __init__(self, address_types: list[str], address: lis) -> None:
         self.__address_type: str = address_type
         self.__street: str = street
         self.__city: str = city
