@@ -4,4 +4,5 @@
 .idea
 venv
 .github
+assets
 __pycache__
