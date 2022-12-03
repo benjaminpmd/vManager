@@ -1,5 +1,6 @@
 """
 This file contain the main function to run.
+This class
 
 @author Benjamin PAUMARD
 @version 1.0.0
@@ -16,35 +17,71 @@ import sys
 
 # import constants
 import config.config as config
-from vcalendar.calendar_manager import CalendarManager
-from vcard.vcard import VCard
-from vcard.vcard_manager import VCardManager
+
+# importing modules needed for the CLI to run correctly
+from ics.ics_manager import ICSManager
+from vcf.vcf_manager import VCFManager
+from vcf.vcard import VCard
 
 
-def print_card_content(path: str):
-    manager = VCardManager(path)
-    vcard: VCard = manager.get_vcard()
-
-    print(f"    > Name: {' '.join(vcard.get_names())}")
-    print(f"    > Full Name: {vcard.get_full_name()}")
-    print(f"    > Title: {vcard.get_title()}")
-    print(f"    > Organizations: {', '.join(vcard.get_org())}")
+def print_card_content(path: str) -> None:
+    """! Function that print the content of a VCF file.
+    The VCF file can contain multiple contacts.
     
-    for address in vcard.get_addresses():
-        print(f"    > Address of types {', '.join(address.get_address_types())}: {' '.join(address.get_address_elements())}")
+    @param path the path of the file to explore.
+    """
+    # initiating the manager that will be used and pass it the path of the file
+    manager = VCFManager(path)
 
-    for email in vcard.get_emails():
-        print(f"    > Email of types {', '.join(email.get_email_types())}: {email.get_email_address()}")
+    # get the vcard list: the contacts in the folder
+    vcards: list[VCard] = manager.get_vcards()
+
+    # for each vcard print data
+    for vcard in vcards:
+        # basic informations
+        print(f"=> {vcard.get_full_name()}")
+        print(f"    > Name: {' '.join(vcard.get_names())}")
+        
+        # print data depending on their existence
+        if vcard.get_title() != '':
+            print(f"    > Title: {vcard.get_title()}")
+
+        # print data depending on their existence 
+        if vcard.get_org() != '':
+            print(f"    > Organization: {vcard.get_org()}")
+        
+        # print each address of the contact
+        for address in vcard.get_addresses():
+            # check if the address is the preferred one or not
+            if (address.is_preferred()):
+                print(f"    > Address of types {', '.join(address.get_address_types())}: {' '.join(address.get_address_elements())} (preferred)")
+            else:
+                print(f"    > Address of types {', '.join(address.get_address_types())}: {' '.join(address.get_address_elements())}")
+        
+        # print each email of the contact
+        for email in vcard.get_emails():
+            if (email.is_preferred()):
+                # check if the email is the preferred one or not
+                print(f"    > Email of types {', '.join(email.get_email_types())}: {email.get_email_address()} (preferred)")
+            else:
+                print(f"    > Email of types {', '.join(email.get_email_types())}: {email.get_email_address()}")
+
+        # print each phone of the contact
+        for phone in vcard.get_phones():
+            if (phone.is_preferred()):
+                # check if the phone is the preferred one or not
+                print(f"    > Phone of types {', '.join(phone.get_phone_types())}: {phone.get_phone_number()} (preferred)")
+            else:
+                print(f"    > Phone of types {', '.join(phone.get_phone_types())}: {phone.get_phone_number()}")
     
-    for phone in vcard.get_phones():
-        print(f"    > Phone of types {', '.join(phone.get_phone_types())}: {phone.get_phone_number()}")
-
-    print(f"    > Note: {vcard.get_note()}")
+        # end with the note of the user
+        if vcard.get_note():
+            print(f"    > Note: {vcard.get_note()}")
 
 
 def print_calendar_content(path: str):
-    manager = CalendarManager(path)
-    for event in manager.get_formatted_events():
+    manager = ICSManager(path)
+    for event in manager.get_vevents():
         print("\n=> " + event["summary"])
         print("     > Date:            " + str(event["timestamp"]))
         print("     > Starting date:   " + str(event["start_date"]))
@@ -58,28 +95,28 @@ def print_calendar_content(path: str):
 def export_file(input_path: str, output_path: str):
    
     if input_path.endswith('.vcf'):
-        manager: VCardManager = VCardManager(input_path)
+        vcf_manager: VCFManager = VCFManager(input_path)
         
         if output_path.endswith('.csv'):
-            manager.export_csv(output_path)
+            vcf_manager.export_csv(output_path)
             return "The file has been converted"
         
         elif output_path.endswith('.html'):
-            manager.export_html(output_path)
+            vcf_manager.export_html(output_path)
             return "The file has been converted"
         
         else:
             return "Incorrect file output"
     
     elif input_path.endswith('.ics'):
-        manager: CalendarManager = CalendarManager(input_path)
+        ics_manager: ICSManager = ICSManager(input_path)
         
         if output_path.endswith('.csv'):
-            manager.export_csv(output_path)
+            ics_manager.export_csv(output_path)
             return "The file has been converted"
         
         elif output_path.endswith('.html'):
-            manager.export_html(output_path)
+            ics_manager.export_html(output_path)
             return "The file has been converted"
         
         else:
@@ -89,10 +126,10 @@ def export_file(input_path: str, output_path: str):
         return "Incorrect file input"
             
 
-class Cli:
+class CLI:
     def __init__(self, app_name: str, app_version: str) -> None:
-        self.app_name: str = app_name
-        self.app_version: str = app_version
+        self.__app_name: str = app_name
+        self.__app_version: str = app_version
 
     def dir_explorer(self, path: str, files: dict[str, list[str]] = {}) -> dict[str, list[str]]:
         """! Method that list all the .ics and all .vcf files present in a given directory.
@@ -118,7 +155,7 @@ class Cli:
 
                 # creating an entry in the dictionary with the path if it does not exist
                 if files.get(path) is None:
-                    files[path]: list[str] = []
+                    files[path] = []
 
                 # append the file to the list
                 files[path].append(item)
@@ -143,14 +180,16 @@ class Cli:
             print(f"\n{key}:")
 
             # print each file
-            for value in files.get(key):
-                print(f"     => {value}")
+            files_names = files.get(key)
+            if (files_names):
+                for value in files_names:
+                    print(f"     => {value}")
         print("\n ")
 
     def print_help(self) -> None:
         """! A function that print help."""
 
-        print(f"Help of {self.app_name} Version {self.app_version}\n")
+        print(f"Help of {self.__app_name} Version {self.__app_version}\n")
         print("-h or -- help to print help.")
         print(
             "-d '{path}' list all the vci and vcf files present in the specified directory.")
@@ -163,10 +202,11 @@ class Cli:
 def main(argv: list) -> None:
     """! Function executing the script and processing the arguments passed in parameters
     The parameters of the function are passed by the user when running the script.
+    
     @param argv the parameters passed by the user.
     """
 
-    cli: Cli = Cli(config.APP_NAME, config.VERSION)
+    cli: CLI = CLI(config.APP_NAME, config.VERSION)
 
     # getting the number of parameters
     #  of index 0 will be the call to the script
