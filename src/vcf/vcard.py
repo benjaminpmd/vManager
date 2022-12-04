@@ -16,25 +16,25 @@ class VCard:
     def __init__(self) -> None:
         """! Constructor of a VCard, the same class is used no matter the version. Only data extraction and saving will change/"""
         # version of the vcard
-        self.version: float = 0
+        self.__version: float = 0
         # names of the contact
-        self.names: list[str] = []
+        self.__names: list[str] = []
         # full name of the contact
-        self.full_name: str = ''
+        self.__full_name: str = ''
         # organization of the contact
-        self.org: str = ''
+        self.__org: str = ''
         # title of the contact
-        self.title: str = ''
+        self.__title: str = ''
         # addresses of the contact
-        self.addresses: list[Address] = []
+        self.__addresses: list[Address] = []
         # emails of the contact
-        self.emails: list[Email] = []
+        self.__emails: list[Email] = []
         # phones of th contact
-        self.phones: list[Phone] = []
+        self.__phones: list[Phone] = []
         # note of the contact
-        self.note: str = ''
+        self.__note: str = ''
         # categories of the contact
-        self.categories: list[str] = []
+        self.__categories: list[str] = []
 
     def __str__(self) -> str:
         """! Method that returns the object as a string.
@@ -42,80 +42,86 @@ class VCard:
 
         @return a string containing the object.
         """
-        return f"VCardObject=[version = {self.version}, names = {self.names}, \nfull_name = {self.full_name}, \norg = {self.org}, \ntitle = {self.title}, \naddresses = {self.addresses}, \nemails = {self.emails} \nphones = {self.phones} \nnote = {self.note} \ncategories = {self.categories}]"
+        return f"VCardObject=[version = {self.__version}, names = {self.__names}, \nfull_name = {self.__full_name}, \norg = {self.__org}, \ntitle = {self.__title}, \naddresses = {self.__addresses}, \nemails = {self.__emails} \nphones = {self.__phones} \nnote = {self.__note} \ncategories = {self.__categories}]"
 
     def get_version(self) -> float:
-        return self.version
+        return self.__version
 
     def set_version(self, version: float) -> None:
-        self.version = version
+        self.__version = version
 
     def get_names(self) -> list[str]:
-        return self.names
+        return self.__names
 
     def add_name(self, name) -> None:
-        self.names.append(name)
+        self.__names.append(name)
 
     def get_full_name(self) -> str:
-        return self.full_name
+        return self.__full_name
 
     def set_full_name(self, full_name: str) -> None:
-        self.full_name = full_name
+        self.__full_name = full_name
 
     def get_org(self) -> str:
-        return self.org
+        return self.__org
 
     def set_org(self, org: str) -> None:
-        self.org = org
+        self.__org = org
 
     def get_title(self) -> str:
-        return self.title
+        return self.__title
 
     def set_title(self, title: str) -> None:
-        self.title = title
+        self.__title = title
 
     def get_addresses(self) -> list[Address]:
-        return self.addresses
+        return self.__addresses
 
     def add_address(self, address: Address) -> None:
-        self.addresses.append(address)
+        self.__addresses.append(address)
 
     def get_emails(self) -> list[Email]:
-        return self.emails
+        return self.__emails
 
     def add_email(self, email: Email) -> None:
-        self.emails.append(email)
+        self.__emails.append(email)
 
     def get_phones(self) -> list[Phone]:
-        return self.phones
+        return self.__phones
 
     def add_phone(self, phone: Phone) -> None:
-        self.phones.append(phone)
+        self.__phones.append(phone)
 
     def get_note(self) -> str:
-        return self.note
+        return self.__note
 
     def set_note(self, note: str) -> None:
-        self.note = note
+        self.__note = note
 
     def get_categories(self) -> list[str]:
-        return self.categories
+        return self.__categories
 
     def add_category(self, category: str) -> None:
-        self.categories.append(category)
+        self.__categories.append(category)
 
     def save(self, f) -> None:
+        """! Method that save the vcard into a file.
+        All the data  will be saved
 
+        @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
+        """
+        # save basic infos
         f.write("BEGIN:VCARD\n")
-        f.write(f"VERSION:{self.version}\n")
-        f.write(f"N:{';'.join(self.names)}\n")
-        f.write(f"FN:{self.full_name}\n")
-        f.write(f"TITLE:{self.title}\n")
-        f.write(f"ORG:{self.org}\n")
+        f.write(f"VERSION:{self.__version}\n")
+        f.write(f"N:{';'.join(self.__names)}\n")
+        f.write(f"FN:{self.__full_name}\n")
+        f.write(f"TITLE:{self.__title}\n")
+        f.write(f"ORG:{self.__org}\n")
 
-        for address in self.addresses:
+        # save each address
+        for address in self.__addresses:
             temp: str = "ADR:"
-
+            # save address types
             for type in address.get_address_types():
                 temp += f"type={type};"
 
@@ -123,9 +129,10 @@ class VCard:
 
             f.write(temp)
 
-        for email in self.emails:
+        # save emails
+        for email in self.__emails:
             temp: str = "EMAIL:"
-
+            # save email types
             for type in email.get_email_types():
                 temp += f"type={type};"
 
@@ -133,9 +140,10 @@ class VCard:
 
             f.write(temp)
 
-        for phone in self.phones:
+        # save phones
+        for phone in self.__phones:
             temp: str = "TEL:"
-
+            # save phone types
             for type in phone.get_phone_types():
                 temp += f"type={type};"
 
@@ -143,47 +151,55 @@ class VCard:
 
             f.write(temp)
 
-        f.write(f"NOTE:{self.note}\n")
+        f.write(f"NOTE:{self.__note}\n")
         f.write("END:VCARD\n")
 
     def export_csv(self, f) -> None:
+        """! Method that export a vcard into a CSV.
+        The file used may be opened in the vcf manager.
 
-        f.write(f"name,{','.join(self.names)}")
-        f.write(f"\nfull name,{self.full_name}")
-        f.write(f"\ntitle,{self.title}")
-        f.write(f"\norganization,{self.org}")
+        @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
+        """
 
-        for address in self.addresses:
-            temp: str = "\naddress,"
+        # create the string to save
+        string: str = f"{self.__full_name},"
 
-            temp += ','.join(address.get_address_elements())
+        # temp list
+        temp: list[str] = []
 
-            f.write(temp)
+        # add emails to the string
+        for email in self.__emails:
+            temp.append(email.get_email_address())
+        
+        string += '/'.join(temp) + ','
 
-        for email in self.emails:
-            temp: str = "\nemail,"
+        temp.clear()
+        # add phones to the string
+        for phone in self.__phones:
+            temp.append(phone.get_phone_number())
 
-            temp += email.get_email_address()
+        string += '/'.join(temp) + ','
 
-            f.write(temp)
+        temp.clear()
+        # add addresses to the string
+        for address in self.__addresses:
+            temp.append(' '.join(address.get_address_elements()))
 
-        for phone in self.phones:
-            temp: str = "\nphone,"
+        string += '/'.join(temp) + ','
 
-            temp += phone.get_phone_number()
-
-            f.write(temp)
-
-        f.write(f"\nnote,{self.note}")
+        # add organization
+        string += self.__org + '\n'
+        # write into the folder
+        f.write(string)
 
     def export_html(self, f) -> None:
         f.write('<div class="vcard">\n')
-        f.write(f"\t<div class=\"name\">{' '.join(self.names)}</div>\n")
-        f.write(f"\t<div class=\"full-name\">{self.full_name}</div>\n")
-        f.write(f"\t<div class=\"title\">{self.title}</div>\n")
-        f.write(f"\t<div class=\"organization\">{self.org}</div>\n")
+        f.write(f"\t<div class=\"name\">{' '.join(self.__names)}</div>\n")
+        f.write(f"\t<div class=\"full-name\">{self.__full_name}</div>\n")
+        f.write(f"\t<div class=\"title\">{self.__title}</div>\n")
+        f.write(f"\t<div class=\"organization\">{self.__org}</div>\n")
 
-        for address in self.addresses:
+        for address in self.__addresses:
             temp: str = "\t<div class=\"adr\">\n\t\t"
 
             for type in address.get_address_types():
@@ -195,7 +211,7 @@ class VCard:
 
             f.write(temp)
 
-        for email in self.emails:
+        for email in self.__emails:
             temp: str = "\n\t<div class=\"email\">\n\t\t"
 
             for type in email.get_email_types():
@@ -207,7 +223,7 @@ class VCard:
 
             f.write(temp)
 
-        for phone in self.phones:
+        for phone in self.__phones:
             temp: str = "\n\t<div class=\"tel\">\n\t\t"
 
             for type in phone.get_phone_types():
@@ -219,5 +235,5 @@ class VCard:
 
             f.write(temp)
 
-        f.write(f"\n\t<div class=\"note\">{self.note}</div>\n")
+        f.write(f"\n\t<div class=\"note\">{self.__note}</div>\n")
         f.write(f"</div>\n")

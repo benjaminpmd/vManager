@@ -2,7 +2,9 @@
 
 # folders
 .idea
+.fleet
 venv
+.vscode
 .github
 assets
 __pycache__

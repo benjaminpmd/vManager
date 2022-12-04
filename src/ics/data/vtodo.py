@@ -1,4 +1,4 @@
-"""! File containing the class of a VEvent.
+"""! File containing the class of a VTodo.
 This class inherits from VBase.
 
 @author Benjamin PAUMARD
@@ -9,14 +9,13 @@ This class inherits from VBase.
 # importing libs
 from datetime import datetime
 from io import TextIOWrapper
+from ics.data.valarm import VAlarm
 
 # importing modules
 from ics.data.vbase import VBase
-from ics.data.vrule import VRule
-from ics.data.valarm import VAlarm
 
 
-class VEvent(VBase):
+class VTodo(VBase):
     """! Class that contains the elements of an events.
     This class inherits from VBase.
 
@@ -25,7 +24,7 @@ class VEvent(VBase):
     @version 04 December 2022
     """
 
-    def __init__(self, timestamp: datetime, uid: str, dtstart: datetime, dtend: datetime, tzstart: str = '',  tzend: str = '', summary: str = '', location: str = '', description: str = '', status: str = '', valarms: list[VAlarm] = [], vrules: list[VRule] = []) -> None:
+    def __init__(self, timestamp: datetime, uid: str, dtstart: datetime, tzstart: str = '', summary: str = '', duration: str = '', status: str = '', valarms: list[VAlarm] = []) -> None:
         """! Class used to store an event.
         This class inherit from the VBase one.
 
@@ -36,54 +35,34 @@ class VEvent(VBase):
         @param tzstart the timezone of the beginning datetime (optional).
         @param tzend the timezone of the ending datetime (optional).
         @param summary the description of the element (optional).
-        @param description the description of the event (optional).
+        @param duration the duration of the task (optional).
         @param status the status of the event (optional).
-        @param valarms the alarms of the events (optional).
-        @param vrules the recursion rules of the event (optional).
+        @param valarms the alarms of the event (optional).
         """
 
         # init the inherit class
         super().__init__(timestamp, uid, dtstart, tzstart, summary, valarms)
 
         # set the attributes
-        self.__dtend: datetime = dtend
-        self.__tzend: str = tzend
-        self.__location: str = location
-        self.__description: str = description
+        self.__duration: str = duration
         self.__status: str = status
-        self.__rules: list[VRule] = vrules
 
-    def get_dtend(self) -> datetime:
-        """! Method to get the ending time.
-        The end time is a datetime object.
 
-        @return the ending time.
-        """
-        return self.__dtend
-
-    def set_dtend(self, dtend: datetime) -> None:
-        """! Method to set the ending time.
-        The end time is a datetime object.
-
-        @param dtend the ending time.
-        """
-        self.__dtend = dtend
-
-    def get_tzend(self) -> str:
+    def get_duration(self) -> str:
         """! Method to get the timezone of the ending time.
         The time zone is a string indicating the zone where the ending date is.
 
         @return the ending date time zone.
         """
-        return self.__tzend
+        return self.__duration
 
-    def set_tzend(self, tzend: str) -> None:
+    def set_duration(self, duration: str) -> None:
         """! Method to set the timezone of the ending time.
         The time zone is a string indicating the zone where the ending date is.
 
         @param tzend the ending date time zone.
         """
-        self.__tzend = tzend
+        self.__duration = duration
 
     def get_location(self) -> str:
         """! Method to get the location of the event.
@@ -133,22 +112,6 @@ class VEvent(VBase):
         """
         self.__status = status
 
-    def get_vrules(self) -> list[VRule]:
-        """! Method to get the recursion rules of the event.
-        The rules are objects of type VRules.
-
-        @return the list of the rules of the event.
-        """
-        return self.__rules
-
-    def set_vrules(self, vrules: list[VRule]) -> None:
-        """! Method to set the recursion rules of the event.
-        The rules are objects of type VRules.
-
-        @param vrules the list of the rules of the event.
-        """
-        self.__rules = vrules
-
     def save(self, f: TextIOWrapper) -> None:
         """! Method that save the vevent into a file.
         All alarms and rules will be saved as well.
@@ -156,27 +119,20 @@ class VEvent(VBase):
         @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
         """
         # write all basic data
-        f.write("BEGIN:VEVENT\n")
+        f.write("BEGIN:TODO\n")
         f.write(f"UID:{self.__uid}\n")
         f.write(f"DTSTAMP:{self.__timestamp.strftime('%Y%m%dT%H%M%S')}\n")
         f.write(f"SUMMARY:{self.__summary}\n")
         f.write(f"DTSTART;{self.__tzstart}:{self.__dtstart.strftime('%Y%m%dT%H%M%S')}\n")
-        f.write(f"DTEND;{self.__tzend}:{self.__dtend.strftime('%Y%m%dT%H%M%S')}\n")
-        f.write(f"LOCATION:{self.__location}\n")
-        f.write(f"DESCRIPTION:{self.__description}\n")
+        f.write(f"DURATION:{self.__duration}\n")
         f.write(f"STATUS:{self.__status}\n")
-
-        # print each rule
-        for rule in self.__rules:
-            f.write(
-                f"RRULE:FREQ={rule.get_frequency()};UNTIL={rule.get_until()}\n")
 
         # print each alarm
         for alarm in self.__valarms:
             alarm.save(f)
 
         # write the end of the vevent
-        f.write(f"END:VEVENT\n")
+        f.write(f"END:TODO\n")
 
     def export_csv(self, f: TextIOWrapper) -> None:
         """! Method that export an event into a CSV.
@@ -185,7 +141,7 @@ class VEvent(VBase):
         @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
         """
         f.write(
-            f"vevent,{self.get_timestamp().strftime('%Y%m%dT%H%M%S')},{self.get_uid()},{self.get_summary()},{self.get_dtstart().strftime('%Y%m%dT%H%M%S')},{self.get_status()}\n")
+            f"vtodo,{self.get_timestamp()},{self.__uid},{self.__summary},{self.__dtstart},{self.__status}\n")
 
     def export_html(self, f: TextIOWrapper) -> None:
         """! Method that export an event into a HTML file.
@@ -195,11 +151,10 @@ class VEvent(VBase):
         """
         f.write("<div class=\"vevent\">\n")
         f.write(f"\
-        <span class=\"uid\">{self.get_uid()}</span>\n\
-        <span class=\"summary\">{self.get_summary()}</span>\n\
-        <span class=\"dtstart\">{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}</span>\n\
-        <span class=\"dtend\">{self.get_dtend().strftime('%Y%m%dT%H%M%S')}</span>\n\
-        <span class=\"location\">{self.get_location()}</span>\n\
-        <span class=\"status\">{self.get_status()}</span>\n"
+            \t<span class=\"uid\">{self.__uid}</span>\n\
+            \t<span class=\"summary\">{self.__summary}</span>\n\
+            \t<span class=\"dtstart\">{self.__dtstart.strftime('%Y%m%dT%H%M%S')}</span>\n\
+            \t<span class=\"duration\">{self.__duration}</span>\n\
+            \t<span class=\"status\">{self.__status}</span>\n"
         )
         f.write("</div>\n")

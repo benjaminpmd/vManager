@@ -6,6 +6,7 @@ Everything contained in an ics file can be managed from this class.
 @version 03 December 2022
 """
 from ics.data.vevent import VEvent
+from ics.data.vtodo import VTodo
 from ics.vcalendar import VCalendar
 from ics.vcalendar_builder import VCalendarBuilder
 
@@ -24,23 +25,38 @@ class ICSManager:
         
         @param path the path of the file to read.
         """
+
+        # init the values
         self.__builder: VCalendarBuilder = VCalendarBuilder()
         self.__vcalendar: VCalendar = VCalendar() 
+        # if the path is not empty read the file
         if path != '':
             self.read(path)
             
     def get_vevents(self) -> list[VEvent]:
+        """! Method to get the list of events of the calendar.
+        The events have their own type: VEvent.
+
+        @return a list of VEvent.
+        """
         return self.__vcalendar.get_vevents()
 
+    def get_vtodos(self) -> list[VTodo]:
+        """! Method to get the list of events of the calendar.
+        The events have their own type: VTodo.
+
+        @return a list of VTodo.
+        """
+        return self.__vcalendar.get_vtodos()
 
     def export_csv(self, output_path: str) -> None:
-
+        """! Method that export a calendar into a CSV."""
         with open(output_path, 'w') as f:
             self.__vcalendar.export_csv(f)
 
 
     def export_html(self, output_path: str) -> None:
-        
+        """! Method that export a calendar into a HTML file."""
         with open(output_path, 'w') as f:
             self.__vcalendar.export_html(f)
 

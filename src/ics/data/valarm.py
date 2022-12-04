@@ -6,6 +6,9 @@ Alarm are stored as a list in a VEvent. Fore more information, please see vevent
 @version 25 November 2022
 """
 
+from io import TextIOWrapper
+
+
 class VAlarm:
     """! Class that contains the elements of an alarm.
     Alarms are part of a VEvent.
@@ -74,3 +77,15 @@ class VAlarm:
         @param action the action to use.
         """
         self.__action = action
+
+    def save(self, f: TextIOWrapper) -> None:
+        """! Method that save the VAlarm into an ics file.
+        The alarm will be saved.
+
+        @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
+        """
+        f.write("BEGIN:VALRM\n")
+        f.write(f"TRIGGER:{self.__trigger}\n")
+        f.write(f"DESCRIPTION:{self.__description}\n")
+        f.write(f"ACTION:{self.__action}\n")
+        f.write("BEGIN:VALRM")

@@ -8,6 +8,7 @@ This file does not manage or build vcalendar.
 
 # importing elements used in the VCalendar
 from ics.data.vevent import VEvent
+from ics.data.vtodo import VTodo
 
 
 class VCalendar:
@@ -19,13 +20,15 @@ class VCalendar:
     @version 25 November 2022
     """
     
-    def __init__(self, vevents: list[VEvent] = []) -> None:
+    def __init__(self, vevents: list[VEvent] = [], vtodos: list[VTodo] = []) -> None:
         """! Constructor of a VCalendar.
         All the events are stored inside this class.
 
         @param vevents list of events (optional).
+        @param vtodos list of todos (optional).
         """
         self.__vevents: list[VEvent] = vevents
+        self.__vtodos: list[VTodo] = vtodos
 
     def __str__(self) -> str:
         """! Method that returns the object as a string.
@@ -45,6 +48,14 @@ class VCalendar:
     def set_vevents(self, vevents: list[VEvent]) -> None:
         self.__vevents = vevents
 
+    def add_vevent(self, vevent: VEvent) -> None:
+        """! Add a VEvent to the VCalendar.
+        All the events of an ics file are listed in the calendar.
+        
+        @param vevent the event to add.
+        """
+        self.__vevents.append(vevent)
+
     def save(self, f) -> None:
         """! Method to save a calendar into a file.
         All events will be automatically saved.
@@ -59,6 +70,10 @@ class VCalendar:
         for vevent in self.__vevents:
             vevent.save(f)
 
+        # for each vevent, write it
+        for vtodos in self.__vtodos:
+            vtodos.save(f)
+
         f.write("END:VCALENDAR\n")
 
     def export_csv(self, f) -> None:
@@ -68,11 +83,15 @@ class VCalendar:
         @param f the file wrapper, it must be opened as 'w' or at least 'a'.
         """
         # write the beginning of the file
-        f.write("summary,dtstart,detend,location,status\n")
+        f.write("type,timestamp,uid,summary,dtstart,status\n")
 
         # for each vevent, write it
         for vevent in self.__vevents:
             vevent.export_csv(f)
+
+        # for each vtodos, write it
+        for vtodo in self.__vtodos:
+            vtodo.export_csv(f)
     
     def export_html(self, f) -> None:
         """! Method to save a calendar into a HTML format.
@@ -83,6 +102,10 @@ class VCalendar:
         # for each vevent, write it
         for vevent in self.__vevents:
             vevent.export_html(f)
+
+        # for each vtodos, write it
+        for vtodo in self.__vtodos:
+            vtodo.export_html(f)
 
 
     

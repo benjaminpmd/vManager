@@ -82,14 +82,10 @@ def print_card_content(path: str) -> None:
 def print_calendar_content(path: str):
     manager = ICSManager(path)
     for event in manager.get_vevents():
-        print("\n=> " + event["summary"])
-        print("     > Date:            " + str(event["timestamp"]))
-        print("     > Starting date:   " + str(event["start_date"]))
-        print("     > End date:        " + str(event["end_date"]))
-        print("     > Creation date:   " + str(event["creation_date"]))
-        if event["modified_date"]:
-            print("     >" + str(event["modified_date"]))
-        print("     > Repeats " + (' '.join(event["rule"]["repeat"])) + ", ends on " + str(event["rule"]["until"]))
+        print("\n=> " + event.get_summary())
+        print("     > Creation Date:   " + event.get_timestamp().strftime("%Y-%m-%d %H:%M:%S"))
+        print("     > Starting date:   " + event.get_dtstart().strftime("%Y-%m-%d %H:%M:%S"))
+        print("     > End date:        " + event.get_dtend().strftime("%Y-%m-%d %H:%M:%S"))
         print("\n")
 
 def export_file(input_path: str, output_path: str):

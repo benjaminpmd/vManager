@@ -101,6 +101,7 @@ class VCFManager:
         @param path the path of the file to store.
         """
         with open(path, 'w') as f:
+            f.write("full name,emails,phones,addresses,organization\n")
             for vcard in self.__vcards:
                 vcard.export_csv(f)
 

@@ -31,7 +31,8 @@ class Address:
         """! Override the default __str__ method.
         Allow to see the object as a string.
         
-        @return the object as a string."""
+        @return the object as a string.
+        """
         return "AddressObject: {address_types=["+(', '.join(self.__address_types))+"], address_address=["+(', '.join(self.__address_elements))+"], preferred="+str(self.__preferred)+'}'
 
     
