@@ -1,6 +1,3 @@
-import vcfpy as vcf
-import ics
-
 def main() -> None:
     print("Hello World")
 
