@@ -5,9 +5,9 @@
 @since 25 November 2022
 """
 # importing elements used in the VCard
-from vcf.data.email import Email
-from vcf.data.phone import Phone
-from vcf.data.address import Address
+from data.vcf.email import Email
+from data.vcf.phone import Phone
+from data.vcf.address import Address
 
 
 class VCard:
@@ -194,46 +194,15 @@ class VCard:
 
     def export_html(self, f) -> None:
         f.write('<div class="vcard">\n')
-        f.write(f"\t<div class=\"name\">{' '.join(self.__names)}</div>\n")
-        f.write(f"\t<div class=\"full-name\">{self.__full_name}</div>\n")
+        f.write(f"\t<div class=\"fn\">{self.__full_name}</div>\n")
         f.write(f"\t<div class=\"title\">{self.__title}</div>\n")
-        f.write(f"\t<div class=\"organization\">{self.__org}</div>\n")
-
-        for address in self.__addresses:
-            temp: str = "\t<div class=\"adr\">\n\t\t"
-
-            for type in address.get_address_types():
-                temp += f"<span class=\"type\">{type}</span>"
-
-            temp += ' '.join(address.get_address_elements())
-
-            temp += "\n\t</div>"
-
-            f.write(temp)
+        f.write(f"\t<div class=\"org\">{self.__org}</div>\n")
 
         for email in self.__emails:
-            temp: str = "\n\t<div class=\"email\">\n\t\t"
-
-            for type in email.get_email_types():
-                temp += f"<span class=\"type\">{type}</span>"
-
-            temp += email.get_email_address()
-
-            temp += "\n\t</div>"
-
-            f.write(temp)
+            f.write(f"\t<div class=\"email\">{email.get_email_address()}</div>\n")
 
         for phone in self.__phones:
-            temp: str = "\n\t<div class=\"tel\">\n\t\t"
+            f.write(f"\t<div class=\"tel\">{phone.get_phone_number()}</div>\n")
 
-            for type in phone.get_phone_types():
-                temp += f"<span class=\"type\">{type}</span>"
-
-            temp += phone.get_phone_number()
-
-            temp += "\n\t</div>"
-
-            f.write(temp)
-
-        f.write(f"\n\t<div class=\"note\">{self.__note}</div>\n")
+        f.write(f"\t<div class=\"note\">{self.__note}</div>\n")
         f.write(f"</div>\n")

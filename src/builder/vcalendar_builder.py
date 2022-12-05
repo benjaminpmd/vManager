@@ -8,10 +8,11 @@ The builder extract all the informations in an ics file.
 
 # importing the modules
 from datetime import datetime
-from ics.vcalendar import VCalendar
-from ics.data.vevent import VEvent
-from ics.data.valarm import VAlarm
-from ics.data.vrule import VRule
+from data.ics.vcalendar import VCalendar
+from data.ics.vevent import VEvent
+from data.ics.valarm import VAlarm
+from data.ics.vrule import VRule
+from data.ics.vtodo import VTodo
 
 class VCalendarBuilder:
     """! Class that build a VCalendar object out of an ics file.
@@ -102,7 +103,7 @@ class VCalendarBuilder:
                                     vevent.set_status(data[1])
                                 
                                 case "LOCATION":
-                                    vevent.set_status(data[1])
+                                    vevent.set_location(data[1])
 
                                 case "BEGIN:ALARM":
                                     valarm: VAlarm = VAlarm('', '', '')
@@ -120,32 +121,65 @@ class VCalendarBuilder:
                                                 valarm.set_description(data[1])
 
                                             case "ACTION":
-                                                vevent.set_status(data[1])
+                                                valarm.set_action(data[1])
                                     
                                     vevent.add_valarm(valarm)
                                     i += 1
                         vcalendar.add_vevent(vevent)
                         i += 1
                     case "VTODO":
-                        while (i < count and lines[i] != "END:VTODO"):
 
+                        vtodo = VTodo(datetime.now(), '', datetime.now())
+                        while (i < count and lines[i] != "END:VEVENT"):
                             data = self.split(lines[i])
-                            match data[0].upper():
-                                case "UID":
-                                    pass
-                                case "DTSTART":
-                                    pass
-                                case "DTSTAMP":
-                                    pass
-                                case "SUMMARY":
-                                    pass
-                                case "STATUS":
-                                    pass
-                                case "DURATION":
-                                    pass
-                                case "BEGIN:ALARM":
-                                    pass
                             i += 1
+                            match data[0].upper():
+                                
+                                case "UID":
+                                    vtodo.set_uid(data[1])
+                                
+                                case "DTSTART":
+                                    if (len(data) == 2):
+                                        vtodo.set_dtstart(datetime.fromisoformat(data[1]))
+                                    else:
+                                        tz: str = data[1].split('=')[1]
+                                        vtodo.set_tzstart(tz)
+                                        vtodo.set_dtstart(datetime.fromisoformat(data[len(data)-1]))
+
+                                case "DTSTAMP":
+                                    vtodo.set_timestamp(datetime.fromisoformat(data[1]))
+                                
+                                case "SUMMARY":
+                                    vtodo.set_summary(data[1])
+
+                                case "STATUS":
+                                    vtodo.set_status(data[1])
+                                
+                                case "DURATION":
+                                    vtodo.set_duration(data[1])
+
+                                case "BEGIN:ALARM":
+                                    valarm: VAlarm = VAlarm('', '', '')
+
+                                    while (i < count and lines[i] != "END:VALARM"):
+                                        
+                                        data = self.split(lines[i])
+                                        i += 1
+                                        
+                                        match data[0].upper():
+                                            case "TRIGGER":
+                                                valarm.set_trigger(data[1])
+
+                                            case "DESCRIPTION":
+                                                valarm.set_description(data[1])
+
+                                            case "ACTION":
+                                                valarm.set_action(data[1])
+                                    
+                                    vtodo.add_valarm(valarm)
+                                    i += 1
+                        vcalendar.add_vtodo(vtodo)
+                        i += 1
             else:
                 i += 1
             

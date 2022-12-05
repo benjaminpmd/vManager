@@ -6,8 +6,8 @@ Features to export contacts to a vcf file are also available here.
 @version 1.0.0
 @since 03 December 2022
 """
-from vcf.vcard import VCard
-from vcf.vcard_builder import VCardBuilder
+from data.vcf.vcard import VCard
+from builder.vcard_builder import VCardBuilder
 
 
 class VCFManager:
@@ -27,9 +27,11 @@ class VCFManager:
         # set the attributes
         self.__vcards: list[VCard] = []
         self.__builder: VCardBuilder = VCardBuilder()
+        self.__path: str = '' 
 
         # if path is not empty, read the content of the file
         if path != '':
+            self.__path = path
             self.read(path)
 
     def get_vcards(self) -> list[VCard]:
@@ -47,6 +49,22 @@ class VCFManager:
         @param the list of VCard objects.
         """
         self.__vcards = vcards
+
+    def get_path(self) -> str:
+        """! Method to get the path of the opened file.
+        The path can be used by default if no path is provided to save method.
+        
+        @return the path of the opened file.
+        """
+        return self.__path
+
+    def set_path(self, path: str) -> None:
+        """! Method to set the path of the opened file.
+        The path can be used by default if no path is provided to save method.
+        
+        @param path the path of the opened file.
+        """
+        self.__path = path
 
     def read(self, path: str) -> None:
         """! Open a vcf file and extract all VCards contained inside.
@@ -90,6 +108,10 @@ class VCFManager:
 
         @param path the path of the file to store.
         """
+        # if no path is provided, then save it in the original file
+        if path == '':
+            path = self.__path
+
         with open(path, 'w') as f:
             for vcard in self.__vcards:
                 vcard.save(f)
@@ -106,12 +128,23 @@ class VCFManager:
                 vcard.export_csv(f)
 
 
-    def export_html(self, path: str) -> None:
+    def export_html(self, path: str, complete: bool = False) -> None:
         """! Save all the contained contact into a vcf file.
         All the VCards this manager contains will be saved inside.
 
         @param path the path of the file to store.
+        @param complete a boolean indicating if the page must be completed rendered.
         """
+        
         with open(path, 'w') as f:
+
+            if (complete):
+                f.write("<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n\t<title>Exported Contacts</title>\n</head>\n<body>\n")
+
             for vcard in self.__vcards:
                 vcard.export_html(f)
+
+            if (complete):
+                f.write("</body>\n</html>\n")
+
+            

@@ -8,12 +8,12 @@ VCards are managed through the VcfManager.
 
 # importing modules
 # main vcards
-from vcf.vcard import VCard
+from data.vcf.vcard import VCard
 
 # object that compose vcards
-from vcf.data.email import Email
-from vcf.data.phone import Phone
-from vcf.data.address import Address
+from data.vcf.email import Email
+from data.vcf.phone import Phone
+from data.vcf.address import Address
 
 
 class VCardBuilder:

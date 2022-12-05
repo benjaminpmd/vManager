@@ -9,7 +9,7 @@ VEvents and VTodo herits from this class.
 # importing libs
 from datetime import datetime
 
-from ics.data.valarm import VAlarm
+from data.ics.valarm import VAlarm
 
 
 class VBase:

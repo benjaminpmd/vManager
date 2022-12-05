@@ -9,10 +9,10 @@ This class inherits from VBase.
 # importing libs
 from datetime import datetime
 from io import TextIOWrapper
-from ics.data.valarm import VAlarm
 
 # importing modules
-from ics.data.vbase import VBase
+from data.ics.valarm import VAlarm
+from data.ics.vbase import VBase
 
 
 class VTodo(VBase):
@@ -141,7 +141,7 @@ class VTodo(VBase):
         @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
         """
         f.write(
-            f"vtodo,{self.get_timestamp()},{self.__uid},{self.__summary},{self.__dtstart},{self.__status}\n")
+            f"vtodo,{self.get_timestamp().strftime('%Y%m%dT%H%M%S')},{self.get_uid()},{self.get_summary()},{self.get_dtstart().strftime('%Y%m%dT%H%M%S')},{self.get_status()}\n")
 
     def export_html(self, f: TextIOWrapper) -> None:
         """! Method that export an event into a HTML file.
@@ -149,12 +149,11 @@ class VTodo(VBase):
 
         @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
         """
-        f.write("<div class=\"vevent\">\n")
+        f.write("<div class=\"vtodo\">\n")
         f.write(f"\
-            \t<span class=\"uid\">{self.__uid}</span>\n\
-            \t<span class=\"summary\">{self.__summary}</span>\n\
-            \t<span class=\"dtstart\">{self.__dtstart.strftime('%Y%m%dT%H%M%S')}</span>\n\
-            \t<span class=\"duration\">{self.__duration}</span>\n\
-            \t<span class=\"status\">{self.__status}</span>\n"
+            \t<div class=\"summary\">{self.get_summary()}</div>\n\
+            \t<abbr class=\"dtstart\" title=\"{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}\">{self.get_dtstart()}</abbr>\n\
+            \t<div class=\"duration\">{self.get_duration()}</div>\n\
+            \t<div class=\"status\">{self.get_duration()}</div>\n"
         )
         f.write("</div>\n")

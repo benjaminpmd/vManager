@@ -7,8 +7,8 @@ This file does not manage or build vcalendar.
 """
 
 # importing elements used in the VCalendar
-from ics.data.vevent import VEvent
-from ics.data.vtodo import VTodo
+from data.ics.vevent import VEvent
+from data.ics.vtodo import VTodo
 
 
 class VCalendar:
@@ -43,18 +43,52 @@ class VCalendar:
         return string
 
     def get_vevents(self) -> list[VEvent]:
+        """! Method that returns the events of the calendar.
+        Only events will be returned, in VEvent objects.
+        
+        @return a list of VEvent objects.
+        """
         return self.__vevents
 
     def set_vevents(self, vevents: list[VEvent]) -> None:
+        """! Method that set the events of the calendar.
+        Only events will be set as VEvent objects.
+        
+        @param vevents a list of VEvent objects.
+        """
         self.__vevents = vevents
 
     def add_vevent(self, vevent: VEvent) -> None:
-        """! Add a VEvent to the VCalendar.
+        """! Add a vevent to the VCalendar.
         All the events of an ics file are listed in the calendar.
         
         @param vevent the event to add.
         """
         self.__vevents.append(vevent)
+
+    def get_vtodos(self) -> list[VTodo]:
+        """! Method that returns the events of the calendar.
+        Only events will be returned, in vtodo objects.
+        
+        @return a list of vtodo objects.
+        """
+        return self.__vtodos
+
+    def set_vtodos(self, vtodos: list[VTodo]) -> None:
+        """! Method that set the events of the calendar.
+        Only events will be set as vtodo objects.
+        
+        @param vtodos a list of vtodo objects.
+        """
+        self.__vtodos = vtodos
+
+    def add_vtodo(self, vtodo: VTodo) -> None:
+        """! Add a vtodo to the VCalendar.
+        All the events of an ics file are listed in the calendar.
+        
+        @param vtodo the todo to add.
+        """
+        self.__vtodos.append(vtodo)
 
     def save(self, f) -> None:
         """! Method to save a calendar into a file.

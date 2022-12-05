@@ -11,9 +11,9 @@ from datetime import datetime
 from io import TextIOWrapper
 
 # importing modules
-from ics.data.vbase import VBase
-from ics.data.vrule import VRule
-from ics.data.valarm import VAlarm
+from data.ics.vbase import VBase
+from data.ics.vrule import VRule
+from data.ics.valarm import VAlarm
 
 
 class VEvent(VBase):
@@ -195,11 +195,10 @@ class VEvent(VBase):
         """
         f.write("<div class=\"vevent\">\n")
         f.write(f"\
-        <span class=\"uid\">{self.get_uid()}</span>\n\
-        <span class=\"summary\">{self.get_summary()}</span>\n\
-        <span class=\"dtstart\">{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}</span>\n\
-        <span class=\"dtend\">{self.get_dtend().strftime('%Y%m%dT%H%M%S')}</span>\n\
-        <span class=\"location\">{self.get_location()}</span>\n\
-        <span class=\"status\">{self.get_status()}</span>\n"
+        <div class=\"summary\">{self.get_summary()}</div>\n\
+        <abbr class=\"dtstart\" title=\"{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}\">{self.get_dtstart()}</abbr>\n\
+        <abbr class=\"dtend\" title=\"{self.get_dtend().strftime('%Y%m%dT%H%M%S')}\">{self.get_dtend()}</abbr>\n\
+        <div class=\"location\">{self.get_location()}</div>\n\
+        <div class=\"status\">{self.get_status()}</div>\n"
         )
         f.write("</div>\n")
