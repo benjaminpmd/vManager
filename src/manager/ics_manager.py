@@ -88,6 +88,7 @@ class ICSManager:
                 lines.append(line)
 
         self.__vcalendar = self.__builder.build(lines)
+        self.__path = path
 
     def save(self, path: str = '') -> None:
         """! Save all the contained contact into an ics file.

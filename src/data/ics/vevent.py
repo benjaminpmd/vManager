@@ -157,14 +157,22 @@ class VEvent(VBase):
         """
         # write all basic data
         f.write("BEGIN:VEVENT\n")
-        f.write(f"UID:{self.__uid}\n")
-        f.write(f"DTSTAMP:{self.__timestamp.strftime('%Y%m%dT%H%M%S')}\n")
-        f.write(f"SUMMARY:{self.__summary}\n")
-        f.write(f"DTSTART;{self.__tzstart}:{self.__dtstart.strftime('%Y%m%dT%H%M%S')}\n")
-        f.write(f"DTEND;{self.__tzend}:{self.__dtend.strftime('%Y%m%dT%H%M%S')}\n")
-        f.write(f"LOCATION:{self.__location}\n")
-        f.write(f"DESCRIPTION:{self.__description}\n")
-        f.write(f"STATUS:{self.__status}\n")
+        f.write(f"UID:{self.get_uid()}\n")
+        f.write(f"DTSTAMP:{self.get_timestamp().strftime('%Y%m%dT%H%M%S')}\n")
+        if (self.get_summary() != ''):
+            f.write(f"SUMMARY:{self.get_summary()}\n")
+        
+        f.write(f"DTSTART:{self.get_tzstart()}:{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}\n")
+        
+        f.write(f"DTEND:{self.get_tzend()}:{self.get_dtend().strftime('%Y%m%dT%H%M%S')}\n")
+        if (self.get_location() != ''):
+            f.write(f"LOCATION:{self.get_location()}\n")
+        
+        if (self.get_description() != ''):
+            f.write(f"DESCRIPTION:{self.get_location()}\n")
+
+        if (self.get_status() != ''):
+            f.write(f"STATUS:{self.get_status()}\n")
 
         # print each rule
         for rule in self.__rules:
@@ -172,7 +180,7 @@ class VEvent(VBase):
                 f"RRULE:FREQ={rule.get_frequency()};UNTIL={rule.get_until()}\n")
 
         # print each alarm
-        for alarm in self.__valarms:
+        for alarm in self.get_valarms():
             alarm.save(f)
 
         # write the end of the vevent

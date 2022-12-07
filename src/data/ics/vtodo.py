@@ -119,20 +119,21 @@ class VTodo(VBase):
         @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
         """
         # write all basic data
-        f.write("BEGIN:TODO\n")
-        f.write(f"UID:{self.__uid}\n")
-        f.write(f"DTSTAMP:{self.__timestamp.strftime('%Y%m%dT%H%M%S')}\n")
-        f.write(f"SUMMARY:{self.__summary}\n")
-        f.write(f"DTSTART;{self.__tzstart}:{self.__dtstart.strftime('%Y%m%dT%H%M%S')}\n")
-        f.write(f"DURATION:{self.__duration}\n")
-        f.write(f"STATUS:{self.__status}\n")
+        f.write("BEGIN:VTODO\n")
+        f.write(f"UID:{self.get_uid()}\n")
+        f.write(f"DTSTAMP:{self.get_timestamp().strftime('%Y%m%dT%H%M%S')}\n")
+        if (self.get_summary() != ''):
+            f.write(f"SUMMARY:{self.get_summary()}\n")
+        f.write(f"DTSTART:{self.get_tzstart()}:{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}\n")
+        f.write(f"DURATION:{self.get_duration()}\n")
+        f.write(f"STATUS:{self.get_status()}\n")
 
         # print each alarm
-        for alarm in self.__valarms:
+        for alarm in self.get_valarms():
             alarm.save(f)
 
         # write the end of the vevent
-        f.write(f"END:TODO\n")
+        f.write(f"END:VTODO\n")
 
     def export_csv(self, f: TextIOWrapper) -> None:
         """! Method that export an event into a CSV.

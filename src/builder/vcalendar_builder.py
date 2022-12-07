@@ -81,16 +81,18 @@ class VCalendarBuilder:
                                     if (len(data) == 2):
                                         vevent.set_dtstart(datetime.fromisoformat(data[1]))
                                     else:
-                                        tz: str = data[1].split('=')[1]
-                                        vevent.set_tzstart(tz)
+                                        if( "=" in data[1]):
+                                            tz: str = data[1].split('=')[1]
+                                            vevent.set_tzstart(tz)
                                         vevent.set_dtstart(datetime.fromisoformat(data[len(data)-1]))
                                 
                                 case "DTEND":
                                     if (len(data) == 2):
                                         vevent.set_dtend(datetime.fromisoformat(data[1]))
                                     else:
-                                        tz: str = data[1].split('=')[1]
-                                        vevent.set_tzend(tz)
+                                        if("=" in data[1]):
+                                            tz: str = data[1].split('=')[1]
+                                            vevent.set_tzend(tz)
                                         vevent.set_dtend(datetime.fromisoformat(data[len(data)-1]))
 
                                 case "DTSTAMP":
@@ -142,8 +144,9 @@ class VCalendarBuilder:
                                     if (len(data) == 2):
                                         vtodo.set_dtstart(datetime.fromisoformat(data[1]))
                                     else:
-                                        tz: str = data[1].split('=')[1]
-                                        vtodo.set_tzstart(tz)
+                                        if('=' in data[1]):
+                                            tz: str = data[1].split('=')[1]
+                                            vtodo.set_tzstart(tz)
                                         vtodo.set_dtstart(datetime.fromisoformat(data[len(data)-1]))
 
                                 case "DTSTAMP":
@@ -180,6 +183,8 @@ class VCalendarBuilder:
                                     i += 1
                         vcalendar.add_vtodo(vtodo)
                         i += 1
+                    case other:
+                        i+=1
             else:
                 i += 1
             

@@ -101,8 +101,9 @@ class VCFManager:
                 # else it's the content of a VCard, save it in the list of the lines
                 else:
                     card_lines.append(line)
+        self.__path = path
     
-    def save(self, path: str) -> None:
+    def save(self, path: str = '') -> None:
         """! Save all the contained contact into a vcf file.
         All the VCards this manager contains will be saved inside.
 
