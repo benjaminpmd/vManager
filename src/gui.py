@@ -137,11 +137,20 @@ class GUI(tk.Tk):
 
         # add the menu to the config
         self.config(menu=self.__menubar)
+
+
+        # export menu system
+        export_menu: tk.Menu = tk.Menu(self.__file_menu, tearoff=0)
+        export_menu.add_command(label="HTML", command=lambda: self.export('html', False))
+        export_menu.add_command(label="Full HTML page", command=lambda: self.export('html', True))
+        export_menu.add_command(label="CSV", command=lambda: self.export('csv', False))
         
         # add options to the file menu commands
         self.__file_menu.add_command(label="Open", command=self.open_file)
         self.__file_menu.add_command(label="Save", command=self.save_file)
         self.__file_menu.add_command(label="Save as...", command=self.save_as_file)
+        self.__file_menu.add_command(label="Import", command=self.open_file)
+        self.__file_menu.add_cascade(label="Export as", menu=export_menu)
         self.__file_menu.add_command(label="Close", command=self.destroy)
         # add the file menu to the main menu
         self.__menubar.add_cascade(label="File", menu=self.__file_menu)
@@ -263,6 +272,64 @@ class GUI(tk.Tk):
                 else:
                     # else append the element to the last string in the element list
                     temp = f"{temp}{char}"
+
+    def import_file(self) -> None:
+        """! Import an HTML or CSV file."""
+        pass
+
+    def export(self, export_type: str, full_html_page: bool = False) -> None:
+        """! Export a file into a HTML microformat or a CSV file.
+        This method should be called by the menu.
+        
+        @param export_type the type to export (HTML or CSV).
+        @param full_html_page wether the HTML generated page should use only microformat or complete page rendering.
+        """
+        # set the files types to use
+
+        filetypes = []
+
+        if export_type == 'html':
+            filetypes = [("HTML files", "*.html")]
+
+        elif export_type == 'csv':
+            filetypes = [("CSV files", "*.csv")]
+        
+
+        # ask for the filename
+        filename: str = fd.asksaveasfilename(filetypes=filetypes, initialdir=os.getcwd())
+    
+        if filename == '':
+            return
+        
+        if export_type == 'html':
+            # if is a VCF, then use the vcf manager
+            if (self.__filetype == 'vcf'):
+                if (filename.endswith('.vcf')):
+                    self.__vcf.export_html(filename, full_html_page)
+                else:
+                    self.__vcf.export_html(f"{filename}.vcf", full_html_page)
+
+            # else its an ICS use the ICS manager
+            elif (self.__filetype == 'ics'):
+                if (filename.endswith('.ics')):
+                    self.__ics.export_html(filename, full_html_page)
+                else:
+                    self.__ics.export_html(f"{filename}.ics", full_html_page)
+        elif export_type == 'csv':
+            # if is a VCF, then use the vcf manager
+            if (self.__filetype == 'vcf'):
+                if (filename.endswith('.vcf')):
+                    self.__vcf.export_csv(filename)
+                else:
+                    self.__vcf.export_csv(f"{filename}.vcf")
+
+            # else its an ICS use the ICS manager
+            elif (self.__filetype == 'ics'):
+                if (filename.endswith('.ics')):
+                    self.__ics.export_csv(filename)
+                else:
+                    self.__ics.export_csv(f"{filename}.ics")
+
 
     def set_view_frame_content(self) -> None:
         """! Set the content of the view frame."""
