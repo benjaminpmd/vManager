@@ -431,6 +431,9 @@ class GUI(tk.Tk):
         """
         # reset the frame
         card = self.__vcf.get_vcard_from_name(elements.get(ids[0]))
+        if (card is None):
+            return
+
         for widgets in self.__edit_frame.winfo_children():
             widgets.destroy()
         
@@ -484,6 +487,8 @@ class GUI(tk.Tk):
         """
         # reset the frame
         event = self.__ics.get_event_from_summary(elements.get(ids[0]))
+        if (event is None):
+            return
         for widgets in self.__edit_frame.winfo_children():
             widgets.destroy()
 
@@ -541,6 +546,8 @@ class GUI(tk.Tk):
         """
         # reset the frame
         todo = self.__ics.get_todo_from_summary(elements.get(ids[0]))
+        if (todo is None):
+            return
         for widgets in self.__edit_frame.winfo_children():
             widgets.destroy()
 

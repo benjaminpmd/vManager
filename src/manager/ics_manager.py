@@ -46,7 +46,7 @@ class ICSManager:
         """
         return self.__vcalendar.get_vevents()
 
-    def get_event_from_summary(self, summary: str) -> VEvent:
+    def get_event_from_summary(self, summary: str) -> VEvent | None:
         """! Returns a VEvent from a given summary.
         In the case the event does not exist, return None.
         
@@ -85,7 +85,7 @@ class ICSManager:
         """
         return self.__vcalendar.get_vtodos()
 
-    def get_todo_from_summary(self, summary: str) -> VTodo:
+    def get_todo_from_summary(self, summary: str) -> VTodo | None:
         """! Returns a VEvent from a given summary.
         In the case the event does not exist, return None.
         

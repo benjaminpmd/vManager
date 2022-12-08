@@ -43,7 +43,7 @@ class VCFManager:
         """
         return self.__vcards
 
-    def get_vcard_from_name(self, full_name: str) -> VCard:
+    def get_vcard_from_name(self, full_name: str) -> VCard | None:
         """! Get the card from a given vcard.
         the vcard is returned for display.
         
