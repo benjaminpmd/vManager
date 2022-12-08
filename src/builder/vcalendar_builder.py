@@ -11,7 +11,7 @@ from datetime import datetime
 from data.ics.vcalendar import VCalendar
 from data.ics.vevent import VEvent
 from data.ics.valarm import VAlarm
-from data.ics.vrule import VRule
+from data.ics.rrule import RRule
 from data.ics.vtodo import VTodo
 
 class VCalendarBuilder:
@@ -106,6 +106,14 @@ class VCalendarBuilder:
                                 
                                 case "LOCATION":
                                     vevent.set_location(data[1])
+
+                                case "RRULE":
+                                    freq: str = data[1].split('=')[1]
+                                    until: str = ''
+                                    if len(data) > 2:
+                                        until = data[2].split('=')[1]
+                                    vevent.add_rrule(RRule(freq, until))                                    
+                                         
 
                                 case "BEGIN:ALARM":
                                     valarm: VAlarm = VAlarm('', '', '')

@@ -5,6 +5,7 @@ Everything contained in an ics file can be managed from this class.
 @version 1.0.0
 @version 03 December 2022
 """
+from datetime import datetime
 from data.ics.vevent import VEvent
 from data.ics.vtodo import VTodo
 from data.ics.vcalendar import VCalendar
@@ -29,7 +30,9 @@ class ICSManager:
         # init the values
         self.__builder: VCalendarBuilder = VCalendarBuilder()
         self.__vcalendar: VCalendar = VCalendar()
-        self.__path: str = '' 
+        self.__path: str = ''
+        self.__current_event_index: int = -1
+        self.__current_todo_index: int = -1
         # if the path is not empty read the file
         if path != '':
             self.__path = path
@@ -43,6 +46,37 @@ class ICSManager:
         """
         return self.__vcalendar.get_vevents()
 
+    def get_event_from_summary(self, summary: str) -> VEvent:
+        """! Returns a VEvent from a given summary.
+        In the case the event does not exist, return None.
+        
+        @param summary the event summary.
+        @return the VEvent corresponding"""
+        for i in range(len(self.get_vevents())):
+            # check for each event if the summary is the same
+            if (self.get_vevents()[i].get_summary() == summary):
+                self.__current_event_index = i
+                return self.get_vevents()[i]
+        return None
+
+    def update_current_event(self, summary: str, dtstart: datetime, dtend: datetime, location: str):
+        """! Updating the event that was selected using the get_event_from_summary method.
+        Only this method can update the current selected event.
+        
+        @param summary the summary to set.
+        @param dtsart the ew date to use for start.
+        @param dtend the ending date of the event.
+        @param location the location of the event.
+        """
+        # update the element
+        self.get_vevents()[self.__current_event_index].set_summary(summary)
+        self.get_vevents()[self.__current_event_index].set_dtstart(dtstart)
+        self.get_vevents()[self.__current_event_index].set_dtend(dtend)
+        self.get_vevents()[self.__current_event_index].set_location(location)
+        # save the file
+        self.save()
+
+
     def get_vtodos(self) -> list[VTodo]:
         """! Method to get the list of events of the calendar.
         The events have their own type: VTodo.
@@ -50,6 +84,36 @@ class ICSManager:
         @return a list of VTodo.
         """
         return self.__vcalendar.get_vtodos()
+
+    def get_todo_from_summary(self, summary: str) -> VTodo:
+        """! Returns a VEvent from a given summary.
+        In the case the event does not exist, return None.
+        
+        @param summary the event summary.
+        @return the VEvent corresponding"""
+        for i in range(len(self.get_vtodos())):
+            # check for each event if the summary is the same
+            if (self.get_vtodos()[i].get_summary() == summary):
+                self.__current_todo_index = i
+                return self.get_vtodos()[i]
+        return None
+
+    def update_current_todo(self, summary: str, dtstart: datetime, duration: str, status: str):
+        """! Updating the todo that was selected using the get_todo_from_summary method.
+        Only this method can update the current selected todo.
+        
+        @param summary the summary to set.
+        @param dtsart the ew date to use for start.
+        @param duration the ending date of the tdo.
+        @param status the status of the todo.
+        """
+        # update the element
+        self.get_vtodos()[self.__current_todo_index].set_summary(summary)
+        self.get_vtodos()[self.__current_todo_index].set_dtstart(dtstart)
+        self.get_vtodos()[self.__current_todo_index].set_duration(duration)
+        self.get_vtodos()[self.__current_todo_index].set_status(status)
+        # save the file
+        self.save()
 
     def get_path(self) -> str:
         """! Method to get the path of the opened file.
@@ -66,7 +130,7 @@ class ICSManager:
         @param path the path of the opened file.
         """
         self.__path = path
-            
+        
     def read(self, path: str) -> None:
         """! Open a vcf file and extract all VCards contained inside.
         The vcf file can contain multiple VCards from different versions.

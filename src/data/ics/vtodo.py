@@ -31,9 +31,7 @@ class VTodo(VBase):
         @param timestamp the creation date of the element.
         @param uid the unique id of the element.
         @param dtstart the starting time of the database.
-        @param dtend the ending time of the database.
         @param tzstart the timezone of the beginning datetime (optional).
-        @param tzend the timezone of the ending datetime (optional).
         @param summary the description of the element (optional).
         @param duration the duration of the task (optional).
         @param status the status of the event (optional).

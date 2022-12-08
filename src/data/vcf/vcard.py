@@ -53,6 +53,14 @@ class VCard:
     def get_names(self) -> list[str]:
         return self.__names
 
+    def set_names(self, names: list[str]) -> None:
+        """! Set the list of the names.
+        All names are stored here, full name also exist as single string.
+        
+        @param names the names of the person.
+        """
+        self.__names = names
+
     def add_name(self, name) -> None:
         self.__names.append(name)
 
@@ -145,7 +153,7 @@ class VCard:
             temp: str = "TEL:"
             # save phone types
             for type in phone.get_phone_types():
-                temp += f"type={type};"
+                temp += f"TYPE={type};"
 
             temp += f"{phone.get_phone_number()}\n"
 

@@ -111,7 +111,6 @@ class CLI:
             print("     > Starting date:   " + todo.get_dtstart().strftime("%Y-%m-%d %H:%M:%S"))
             print("     > Duration:        " + todo.get_duration())
             print("\n")
-        # TODO: add VTODOS
 
     @staticmethod
     def export_file(input_path: str, output_path: str, export_type: str, complete: bool = False):

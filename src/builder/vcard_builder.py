@@ -119,7 +119,7 @@ class VCardBuilder:
                     for element in elements:
                         # if it start with TYPE, then append it to the types
                         # except if the type is PREF, in that case, set the phone as preferred one
-                        if element.upper().startswith("PREF"):
+                        if element.upper().startswith("TYPE"):
                             if element.upper().endswith("PREF"):
                                 phone.set_preferred(True)
                             else:
@@ -128,7 +128,6 @@ class VCardBuilder:
                         # else then it is the number, set the phone
                         else:
                             phone.set_phone_number(element)
-                    
                     # append the email to the list
                     self.__vcard.add_phone(phone)
 
@@ -191,13 +190,16 @@ class VCardBuilder:
             if line.upper().startswith("VERSION:"):
                 # call the extraction method based on the version
                 if line.endswith("2.1"):
-                    self.__extract21()
+                    self.__vcard.set_version(2.1)
+                    self.__extract30()
                 
                 elif line.endswith("3.0"):
+                    self.__vcard.set_version(3.0)
                     self.__extract30()
                     
                 elif line.endswith("4.0"):
-                    self.__extract40()
+                    self.__vcard.set_version(4.0)
+                    self.__extract30()
         
         # return the vcard
         return self.__vcard

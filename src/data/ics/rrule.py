@@ -6,7 +6,7 @@ Rules are stored in events. Fore more information, please see vevent.py document
 @version 03 December 2022
 """
 
-class VRule:
+class RRule:
     """! Class that contains the elements of a rule.
     Rules are part of an event.
     

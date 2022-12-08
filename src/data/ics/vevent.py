@@ -12,7 +12,7 @@ from io import TextIOWrapper
 
 # importing modules
 from data.ics.vbase import VBase
-from data.ics.vrule import VRule
+from data.ics.rrule import RRule
 from data.ics.valarm import VAlarm
 
 
@@ -25,7 +25,7 @@ class VEvent(VBase):
     @version 04 December 2022
     """
 
-    def __init__(self, timestamp: datetime, uid: str, dtstart: datetime, dtend: datetime, tzstart: str = '',  tzend: str = '', summary: str = '', location: str = '', description: str = '', status: str = '', valarms: list[VAlarm] = [], vrules: list[VRule] = []) -> None:
+    def __init__(self, timestamp: datetime, uid: str, dtstart: datetime, dtend: datetime, tzstart: str = '',  tzend: str = '', summary: str = '', location: str = '', description: str = '', status: str = '', valarms: list[VAlarm] = [], rules: list[RRule] = []) -> None:
         """! Class used to store an event.
         This class inherit from the VBase one.
 
@@ -39,7 +39,7 @@ class VEvent(VBase):
         @param description the description of the event (optional).
         @param status the status of the event (optional).
         @param valarms the alarms of the events (optional).
-        @param vrules the recursion rules of the event (optional).
+        @param rules the recursion rules of the event (optional).
         """
 
         # init the inherit class
@@ -51,7 +51,7 @@ class VEvent(VBase):
         self.__location: str = location
         self.__description: str = description
         self.__status: str = status
-        self.__rules: list[VRule] = vrules
+        self.__rules: list[RRule] = rules
 
     def get_dtend(self) -> datetime:
         """! Method to get the ending time.
@@ -133,21 +133,30 @@ class VEvent(VBase):
         """
         self.__status = status
 
-    def get_vrules(self) -> list[VRule]:
+    def get_rrules(self) -> list[RRule]:
         """! Method to get the recursion rules of the event.
-        The rules are objects of type VRules.
+        The rules are objects of type RRules.
 
         @return the list of the rules of the event.
         """
         return self.__rules
 
-    def set_vrules(self, vrules: list[VRule]) -> None:
+    def set_rrules(self, rrules: list[RRule]) -> None:
         """! Method to set the recursion rules of the event.
-        The rules are objects of type VRules.
+        The rules are objects of type RRules.
 
         @param vrules the list of the rules of the event.
         """
-        self.__rules = vrules
+        self.__rules = rrules
+
+    def add_rrule(self, rule: RRule) -> None:
+        """! Method to add a recursion rule of the event.
+        The rules are objects of type RRules.
+
+        @param rules the list of the rules of the event.
+        """
+        self.__rules.append(rule)
+
 
     def save(self, f: TextIOWrapper) -> None:
         """! Method that save the vevent into a file.
@@ -176,8 +185,12 @@ class VEvent(VBase):
 
         # print each rule
         for rule in self.__rules:
-            f.write(
+            if (rule.get_until() != ''):
+                f.write(
                 f"RRULE:FREQ={rule.get_frequency()};UNTIL={rule.get_until()}\n")
+            else:
+               f.write(
+                f"RRULE:FREQ={rule.get_frequency()}\n") 
 
         # print each alarm
         for alarm in self.get_valarms():

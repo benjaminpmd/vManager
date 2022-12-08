@@ -28,6 +28,7 @@ class VCFManager:
         self.__vcards: list[VCard] = []
         self.__builder: VCardBuilder = VCardBuilder()
         self.__path: str = '' 
+        self.__current_card_index: int = -1
 
         # if path is not empty, read the content of the file
         if path != '':
@@ -41,6 +42,36 @@ class VCFManager:
         @return the list of VCard objects.
         """
         return self.__vcards
+
+    def get_vcard_from_name(self, full_name: str) -> VCard:
+        """! Get the card from a given vcard.
+        the vcard is returned for display.
+        
+        @param full_name the name to search.
+        @return a VCard and its id.
+        """
+        for i in range(len(self.__vcards)):
+            if (self.__vcards[i].get_full_name() ==full_name):
+                self.__current_card_index = i
+                return self.__vcards[i]
+        return None
+
+    def update_current_card(self, full_name: str = '', names: list[str] = [], org: str = '', title: str = '') -> None:
+        """! Updating the card that was selected using the get_card_from_name method.
+        Only this method can update the current selected card.
+        
+        @param full_name the full name to set.
+        @param names the name list to use.
+        @param org the org to mark.
+        @param title the title to apply.
+        """
+        # update the card
+        self.__vcards[self.__current_card_index].set_full_name(full_name)
+        self.__vcards[self.__current_card_index].set_names(names)
+        self.__vcards[self.__current_card_index].set_org(org)
+        self.__vcards[self.__current_card_index].set_title(title)
+        # save to the file
+        self.save()
 
     def set_vcards(self, vcards: list[VCard]) -> None:
         """! Set the cards of the manager.
