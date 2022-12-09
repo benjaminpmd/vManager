@@ -105,7 +105,7 @@ class VCFManager:
         @param path the path of the file to read.
         """
         # reset the vcards
-        self.__vcards = []
+        self.__vcards.clear()
 
         # open the file
         with open(path, 'r') as f:
@@ -132,6 +132,57 @@ class VCFManager:
                 # else it's the content of a VCard, save it in the list of the lines
                 else:
                     card_lines.append(line)
+        self.__path = path
+
+
+    def import_from_file(self, path: str) -> None:
+        """! Method that set the calendar out of a HTML or CSV file.
+        Only some elements will be retrieved from the file.
+        
+        @param path the path of the file to import.
+        """
+        self.__vcards.clear()
+        with open(path, 'r') as f:
+            if path.endswith(".csv"):
+
+                # reset the vcards
+                self.__vcards = []
+                self.__path = path
+                # open the file
+                # read each line of the file
+                for line in f:
+                
+                    # replace return to line with empty string
+                    line = line.replace("\n", '')
+                    if not line.startswith("full name"):
+                        card = self.__builder.build_from_csv(line)
+                        self.__vcards.append(card)
+            
+            elif path.endswith(".html"):
+
+                # init the lines of the vcard
+                card_lines: list[str] = []
+
+                # read each line of the file
+                for line in f:
+                
+                    # replace return to line with empty string
+                    line = line.replace("\n", '')
+                    line = line.replace("	", '')
+
+                    # if the line is the beginning of a VCard, reset the list
+                    if line.lower() == "<div class=\"vcard\">":
+                        card_lines = []
+
+                    # if the line indicate the end of a VCard, then create the VCard and store it
+                    if line.lower() == "</div>":
+                        card = None
+                        card = self.__builder.build_from_html(card_lines)
+                        self.__vcards.append(card)
+
+                    # else it's the content of a VCard, save it in the list of the lines
+                    else:
+                        card_lines.append(line)
         self.__path = path
     
     def save(self, path: str = '') -> None:
@@ -169,7 +220,7 @@ class VCFManager:
         """
         
         with open(path, 'w') as f:
-
+            f.write("<!--vcards_export-->\n")
             if (complete):
                 f.write("<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n\t<title>Exported Contacts</title>\n</head>\n<body>\n")
 

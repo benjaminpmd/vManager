@@ -203,3 +203,71 @@ class VCardBuilder:
         
         # return the vcard
         return self.__vcard
+
+    def build_from_csv(self, line: str) -> VCard:
+        """! Method that build a VCard object out of lines read from a CSV file.
+        The line must not contain \\n at the end of the file.
+        
+        @param lines the lines of the CSV file.
+        @return a VCard object.
+        """
+        data: list[str] = line.split(',')
+        card: VCard = VCard()
+
+        card.set_full_name(data[0])
+        
+        for email in data[1].split('/'):
+            e: Email = Email(email_address=email)
+            card.add_email(e)
+
+        for phone in data[2].split('/'):
+            p: Phone = Phone(phone_number=phone)
+            card.add_phone(p)
+
+        for address in data[3].split('/'):
+            a: Address = Address(address=address.split(' '))
+            card.add_address(a)
+
+        card.set_org(data[4])
+
+        return card
+
+
+    def build_from_html(self, lines: list[str]) -> VCard:
+        """! Method that build a VCard object out of lines read from a HTML file.
+        The line must not contain \\n at the end of the file.
+        
+        @param lines the lines of the HTML file.
+        @return a VCard object.
+        """
+        card: VCard = VCard()
+
+        for line in lines:
+            line = line.replace("</div>", '')
+            
+            if line.startswith("<div class=\"fn\">"):
+                    data: str = line.replace("<div class=\"fn\">", '')
+                    card.set_full_name(data)
+
+            elif line.startswith("<div class=\"title\">"):
+                    data: str = line.replace("<div class=\"title\">", '')
+                    card.set_title(data)
+
+            elif line.startswith("<div class=\"org\">"):
+                    data: str = line.replace("<div class=\"org\">", '')
+                    card.set_org(data)
+
+            elif line.startswith("<div class=\"note\">"):
+                    data: str = line.replace("<div class=\"note\">", '')
+                    card.set_note(data)
+
+            elif line.startswith("<div class=\"email\">"):
+                    data: str = line.replace("<div class=\"email\">", '')
+                    email: Email = Email(email_address=data)
+                    card.add_email(email)
+
+            elif line.startswith("<div class=\"tel\">"):
+                    data: str = line.replace("<div class=\"tel\">", '')
+                    phone: Phone = Phone(phone_number=data)
+                    card.add_phone(phone)
+        return card

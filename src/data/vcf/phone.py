@@ -15,7 +15,7 @@ class Phone:
     @version 25 November 2022
     """
 
-    def __init__(self, phone_types: list[str] = [], phone_number: str = '', preferred: bool = True) -> None:
+    def __init__(self, phone_types: list[str] = [], phone_number: str = '', preferred: bool = False) -> None:
         """! Class used to store data of a phone.
         This class can store a phone number and its type.
 

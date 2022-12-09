@@ -138,7 +138,8 @@ class ICSManager:
 
         @param path the path of the file to read.
         """
-
+        self.__vcalendar.get_vevents().clear()
+        self.__vcalendar.get_vtodos().clear()
         # open the file
         with open(path, 'r') as f:
             
@@ -153,6 +154,44 @@ class ICSManager:
 
         self.__vcalendar = self.__builder.build(lines)
         self.__path = path
+
+    def import_from_file(self, path: str) -> None:
+        """! Method that set the calendar out of a HTML or CSV file.
+        Only some elements will be retrieved from the file.
+        
+        @param path the path of the file to import.
+        """
+        self.__vcalendar.get_vevents().clear()
+        self.__vcalendar.get_vtodos().clear()
+
+        with open(path, 'r') as f:
+            if path.endswith(".html"):
+
+                # init the lines of the vcard
+                lines: list[str] = []
+                # read each line of the file
+                for line in f:
+                    # replace return to line with empty string
+                    line = line.replace("\n", '')
+                    line = line.replace("	", '')
+                    line = line.replace("        ", '')
+                    line = line.replace("    ", '')
+                    lines.append(line)
+                
+                self.__vcalendar = self.__builder.build_from_html(lines)
+            
+            elif path.endswith(".csv"):
+
+                # init the lines of the vcard
+                lines: list[str] = []
+                # read each line of the file
+                for line in f:
+                    # replace return to line with empty string
+                    line = line.replace("\n", '')
+                    if not line.startswith("type"):
+                        lines.append(line)
+
+                self.__vcalendar = self.__builder.build_from_csv(lines)
 
     def save(self, path: str = '') -> None:
         """! Save all the contained contact into an ics file.
@@ -169,6 +208,7 @@ class ICSManager:
 
     def export_csv(self, output_path: str) -> None:
         """! Method that export a calendar into a CSV file.
+        This method will export only some elements.
         
         @param path the path of the file to store.
         """
@@ -177,13 +217,17 @@ class ICSManager:
 
     def export_html(self, path: str, complete: bool = False) -> None:
         """! Method that export a calendar into a HTML file.
+        This method will export only some elements.
         
         @param path the path of the file to store.
         @param complete a boolean indicating if the page must be completed rendered.
         """
         
+        # open the file
         with open(path, 'w') as f:
+            f.write("<!--vcalendar_export-->\n")
             if (complete):
+                # if complete page write the beginning
                 f.write("<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n\t<title>Exported Calendar</title>\n</head>\n<body>\n")
 
             self.__vcalendar.export_html(f)

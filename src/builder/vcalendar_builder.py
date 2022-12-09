@@ -195,7 +195,104 @@ class VCalendarBuilder:
                         i+=1
             else:
                 i += 1
-            
+        
+        return vcalendar
+
+
+    def build_from_csv(self, lines: list[str]) -> VCalendar:
+        """! Method that build a VCalendar object out of lines read from a CSV file.
+        The line must not contain \\n at the end of the file.
+        
+        @param lines the lines of the CSV file.
+        @return a VCalendar object.
+        """
+        vcalendar: VCalendar = VCalendar()
+        
+        for line in lines:
+            data: list[str] = line.split(',')
+
+            if data[0] == 'vevent':
+                event: VEvent = VEvent(datetime.fromisoformat(data[1]), data[2], datetime.fromisoformat(data[4]), datetime.fromisoformat(data[4]), summary=data[3], status=data[5])
+                vcalendar.add_vevent(event)
+
+            elif data[0] == 'vtodo':
+                todo: VTodo = VTodo(datetime.fromisoformat(data[1]), data[2], datetime.fromisoformat(data[4]), summary=data[3], status=data[5])
+                vcalendar.add_vtodo(todo)
 
         return vcalendar
+
+    def build_from_html(self, lines: list[str]) -> VCalendar:
+        """! Method that build a VCalendar object out of lines read from a CSV file.
+        The line must not contain \\n at the end of the file.
         
+        @param lines the lines of the CSV file.
+        @return a VCalendar object.
+        """
+        vcalendar: VCalendar = VCalendar()
+        count: int = len(lines)
+        i: int = 0
+        
+        while i < count:
+            line: str = lines[i]
+            if line.startswith("<div class=\"vevent\">"):
+                vevent = VEvent(datetime.now(), '', datetime.now(), datetime.now())
+                while not line.startswith("</div>"):
+                    line: str = lines[i]
+                    if line.startswith("<abbr class=\"dtstart\""):
+                        line = line[46:]
+                        line = line.replace("</abbr>", '')
+                        vevent.set_dtstart(datetime.fromisoformat(line))
+
+                    elif line.startswith("<abbr class=\"dtend\""):
+                        line = line[44:]
+                        line = line.replace("</abbr>", '')
+                        vevent.set_dtend(datetime.fromisoformat(line))
+                    
+                    elif line.startswith("<div class=\"summary\">"):
+                        line = line.replace("<div class=\"summary\">", '')
+                        line = line.replace("</div>", '')
+                        vevent.set_summary(line)
+
+                    elif line.startswith("<div class=\"location\">"):
+                        line = line.replace("<div class=\"location\">", '')
+                        line = line.replace("</div>", '')
+                        vevent.set_location(line)
+
+                    elif line.startswith("<div class=\"status\">"):
+                        line = line.replace("<div class=\"status\">", '')
+                        line = line.replace("</div>", '')
+                        vevent.set_status(line)
+                    
+                    i += 1
+                vcalendar.add_vevent(vevent)
+
+            elif line.startswith("<div class=\"vtodo\">"):
+                vtodo = VTodo(datetime.now(), '', datetime.now())
+                while not line.startswith("</div>"):
+                    line: str = lines[i]
+                    if line.startswith("<abbr class=\"dtstart\">"):
+                        line = line[46:]
+                        line = line.replace("</abbr>", '')
+                        vtodo.set_dtstart(datetime.fromisoformat(line))
+                    
+                    elif line.startswith("<div class=\"summary\">"):
+                        line = line.replace("<div class=\"summary\">", '')
+                        line = line.replace("</div>", '')
+                        vtodo.set_summary(line)
+
+                    elif line.startswith("<div class=\"duration\">"):
+                        line = line.replace("<div class=\"duration\">", '')
+                        line = line.replace("</div>", '')
+                        vtodo.set_duration(line)
+
+                    elif line.startswith("<div class=\"status\">"):
+                        line = line.replace("<div class=\"status\">", '')
+                        line = line.replace("</div>", '')
+                        vtodo.set_status(line)
+                    
+                    i += 1
+                vcalendar.add_vtodo(vtodo)
+            else:
+                i += 1
+        
+        return vcalendar

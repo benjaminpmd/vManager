@@ -18,13 +18,6 @@ from config import config
 from manager.vcf_manager import VCFManager
 from manager.ics_manager import ICSManager
 
-class GUIHelp(tk.Tk):
-    def __init__(self) -> None:
-        super().__init__()
-
-    def run(self) -> None:
-        self.mainloop()
-
 class GUI(tk.Tk):
     """! Class that contains the GUI.
     This GUI features an ICS/VCF viewer and editor.
@@ -48,7 +41,6 @@ class GUI(tk.Tk):
         # create the menus
         self.__menubar: tk.Menu = tk.Menu(self)
         self.__file_menu: tk.Menu = tk.Menu(self.__menubar, tearoff=0)
-        self.__help_menu: tk.Menu = tk.Menu(self.__menubar, tearoff=0)
 
         # title
         self.__title_label: tk.Label = tk.Label(self, text=config.APP_NAME, background=self.__bg_color, foreground=self.__fg_color, font=("Arial", 20))
@@ -149,16 +141,11 @@ class GUI(tk.Tk):
         self.__file_menu.add_command(label="Open", command=self.open_file)
         self.__file_menu.add_command(label="Save", command=self.save_file)
         self.__file_menu.add_command(label="Save as...", command=self.save_as_file)
-        self.__file_menu.add_command(label="Import", command=self.open_file)
+        self.__file_menu.add_command(label="Import", command=self.import_from_exported_file)
         self.__file_menu.add_cascade(label="Export as", menu=export_menu)
         self.__file_menu.add_command(label="Close", command=self.destroy)
         # add the file menu to the main menu
         self.__menubar.add_cascade(label="File", menu=self.__file_menu)
-
-        # add options to the help menu commands
-        self.__help_menu.add_command(label="About", command=self.run_help)
-        # add the help menu to the main menu
-        self.__menubar.add_cascade(label="Help", menu=self.__help_menu)
 
         # set the list view
         self.__list_view.pack(side="left", fill="both")
@@ -182,11 +169,15 @@ class GUI(tk.Tk):
         """! Saves a file as requested by the user.
         A file name will be asked to the user.
         """
-        # if is a VCF, then use the vcf manager
-        if (self.__filetype == 'vcf'):
+        if self.__filetype.startswith("export"):
+            messagebox.showwarning(f"Cannot save - {config.APP_NAME}", "You are viewing an exported file.")
+            return
+
+        # elif is a VCF, then use the vcf manager
+        elif (self.__filetype == 'vcf'):
             self.__vcf.save()
         
-        # else its an ICS use the ICS manager
+        # elif its an ICS use the ICS manager
         elif (self.__filetype == 'ics'):
             self.__ics.save()
 
@@ -194,11 +185,16 @@ class GUI(tk.Tk):
         """! Saves a file as requested by the user.
         A file name will be asked to the user.
         """
+
+        if self.__filetype.startswith("export"):
+            messagebox.showwarning(f"Cannot save - {config.APP_NAME}", "You are viewing an exported file.")
+            return
+
         
         # set the files types to use
         filetypes: tuple = (
-            ('Calendar files', '*.ics'),
-            ('Card files', '*.vcf')
+            ('HTML files', '*.html'),
+            ('CSV files', '*.csv')
         )
 
         # ask for the filename
@@ -273,9 +269,88 @@ class GUI(tk.Tk):
                     # else append the element to the last string in the element list
                     temp = f"{temp}{char}"
 
-    def import_file(self) -> None:
+    def import_from_exported_file(self) -> None:
         """! Import an HTML or CSV file."""
-        pass
+        # set the files types to use
+        filetypes = (
+            ('HTML files', '*.html'),
+            ('CSV', '*.csv')
+        )
+        
+        # ask for the filename
+        filename = fd.askopenfilename(filetypes=filetypes, initialdir=os.getcwd())
+        
+        if (filename == ''):
+            return
+
+        export_type: str = ''
+
+        for widget in self.__edit_frame.winfo_children():
+            widget.destroy()
+
+        # if is a VCF, then use the vcf manager
+        if (filename.endswith('.csv') or filename.endswith('.CSV')):
+            with open(filename, 'r') as f:
+                line: str = f.readline()
+                if line.startswith("type"):
+                    export_type = "ics"
+                
+                elif line.startswith("full name"):
+                    export_type = "vcf"
+            
+            if export_type == 'vcf':
+                try:
+                    self.__vcf.import_from_file(filename)
+                    self.__filetype = 'export-vcf'
+                except:
+                    messagebox.showinfo(f"Corrupted file - {config.APP_NAME}", "The file you are trying to open cannot be read by the application.")
+
+            elif export_type == 'ics':
+                try:
+                    self.__ics.import_from_file(filename)
+                    self.__filetype = 'export-ics'
+                except Exception as e:
+
+                    messagebox.showinfo(f"Corrupted file - {config.APP_NAME}", "The file you are trying to open cannot be read by the application.")
+
+        # else its an ICS use the ICS manager
+        elif filename.endswith('.html'):
+            with open(filename, 'r') as f:
+                line: str = f.readline()
+                if line.startswith("<!--vcalendar"):
+                    export_type = "ics"
+                
+                elif line.startswith("<!--vcards"):
+                    export_type = "vcf"
+
+            if export_type == 'vcf':
+                try:
+                    self.__vcf.import_from_file(filename)
+                    self.__filetype = 'export-vcf'
+                except:
+                    messagebox.showinfo(f"Corrupted file - {config.APP_NAME}", "The file you are trying to open cannot be read by the application.")
+
+            elif export_type == 'ics':
+                try:
+                    self.__ics.import_from_file(filename)
+                    self.__filetype = 'export-ics'
+                except Exception as e:
+                    messagebox.showinfo(f"Corrupted file - {config.APP_NAME}", "The file you are trying to open cannot be read by the application.")
+        else:
+            messagebox.showinfo(f"Incorrect file - {config.APP_NAME}", "The file you are trying to open is not supported by the application.")
+
+        self.set_view_frame_content()
+
+        # create the title
+        temp: str = ''
+        for char in filename[::-1]:
+                # if the char is ; or : append a new element
+                if (char == '/') or (char == '\\'):
+                    self.__opened_filename_label["text"] = f"Viewing {temp[::-1]}"
+                    return
+                else:
+                    # else append the element to the last string in the element list
+                    temp = f"{temp}{char}"
 
     def export(self, export_type: str, full_html_page: bool = False) -> None:
         """! Export a file into a HTML microformat or a CSV file.
@@ -285,6 +360,10 @@ class GUI(tk.Tk):
         @param full_html_page wether the HTML generated page should use only microformat or complete page rendering.
         """
         # set the files types to use
+
+        if self.__filetype.startswith("export"):
+            messagebox.showwarning(f"Cannot save - {config.APP_NAME}", "You are viewing an exported file.")
+            return
 
         filetypes = []
 
@@ -304,42 +383,49 @@ class GUI(tk.Tk):
         if export_type == 'html':
             # if is a VCF, then use the vcf manager
             if (self.__filetype == 'vcf'):
-                if (filename.endswith('.vcf')):
+                
+                if (filename.endswith('.html')):
                     self.__vcf.export_html(filename, full_html_page)
+                
                 else:
-                    self.__vcf.export_html(f"{filename}.vcf", full_html_page)
+                    self.__vcf.export_html(f"{filename}.html", full_html_page)
 
             # else its an ICS use the ICS manager
             elif (self.__filetype == 'ics'):
-                if (filename.endswith('.ics')):
+                
+                if (filename.endswith('.html')):
                     self.__ics.export_html(filename, full_html_page)
+                
                 else:
-                    self.__ics.export_html(f"{filename}.ics", full_html_page)
+                    self.__ics.export_html(f"{filename}.html", full_html_page)
+
         elif export_type == 'csv':
             # if is a VCF, then use the vcf manager
             if (self.__filetype == 'vcf'):
-                if (filename.endswith('.vcf')):
+                
+                if (filename.endswith('.csv')):
                     self.__vcf.export_csv(filename)
+                
                 else:
-                    self.__vcf.export_csv(f"{filename}.vcf")
+                    self.__vcf.export_csv(f"{filename}.csv")
 
             # else its an ICS use the ICS manager
             elif (self.__filetype == 'ics'):
-                if (filename.endswith('.ics')):
+                
+                if (filename.endswith('.csv')):
                     self.__ics.export_csv(filename)
+                
                 else:
-                    self.__ics.export_csv(f"{filename}.ics")
-
+                    self.__ics.export_csv(f"{filename}.csv")
 
     def set_view_frame_content(self) -> None:
         """! Set the content of the view frame."""
         # if is a VCF, then use the vcf manager
         self.__list_view.config(state='normal')
-        self.__list_view.delete(1.0, tk.END)
+        self.__list_view.delete(0.0, 'end')
         self.__list_view.config(state='disabled')
         
-        
-        if (self.__filetype == 'vcf'):
+        if (self.__filetype == 'vcf' or self.__filetype == 'export-vcf'):
             for vcard in self.__vcf.get_vcards():
                 # for each vcard print data
                 # basic informations
@@ -393,7 +479,7 @@ class GUI(tk.Tk):
                 self.__list_view.config(state='disabled')
 
         # else its an ICS use the ICS manager
-        elif self.__filetype == 'ics':
+        elif self.__filetype == 'ics' or self.__filetype == 'export-ics':
             # for each event, print it
             for event in self.__ics.get_vevents():
                 string: str = ''
@@ -662,10 +748,6 @@ class GUI(tk.Tk):
             self.set_selection_edit_frame()
         except:
             messagebox.showwarning(f"{config.APP_NAME}", "Warning, could not convert the date entered.")
-
-    def run_help(self) -> None:
-        """! Method that run the help menu"""
-        GUIHelp().run()
 
     def run(self) -> None:
         """! method that run the GUI."""
