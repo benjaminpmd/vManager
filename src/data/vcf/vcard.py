@@ -1,4 +1,5 @@
 """! File containing the class where the vcard element is stored.
+All elements of a vcard is saved in this class.
 
 @author Benjamin PAUMARD
 @version 1.0.0
@@ -11,7 +12,13 @@ from data.vcf.address import Address
 
 
 class VCard:
-    """! Class containing all the elements of a VCard."""
+    """! Class containing all the elements of a VCard.
+    All elements of a vcard is saved in this class.
+
+    @author Benjamin PAUMARD
+    @version 1.0.0
+    @since 25 November 2022
+    """
 
     def __init__(self) -> None:
         """! Constructor of a VCard, the same class is used no matter the version. Only data extraction and saving will change/"""
@@ -201,16 +208,26 @@ class VCard:
         f.write(string)
 
     def export_html(self, f) -> None:
+        """! Method that export a vcard into an HTML file.
+        The file used may be opened in the vcf manager.
+
+        @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
+        """
+
+        # write base of the content
         f.write('<div class="vcard">\n')
         f.write(f"\t<div class=\"fn\">{self.__full_name}</div>\n")
         f.write(f"\t<div class=\"title\">{self.__title}</div>\n")
         f.write(f"\t<div class=\"org\">{self.__org}</div>\n")
 
+        # write emails
         for email in self.__emails:
             f.write(f"\t<div class=\"email\">{email.get_email_address()}</div>\n")
 
+        # write phones
         for phone in self.__phones:
             f.write(f"\t<div class=\"tel\">{phone.get_phone_number()}</div>\n")
 
+        # write end of the file
         f.write(f"\t<div class=\"note\">{self.__note}</div>\n")
         f.write(f"</div>\n")

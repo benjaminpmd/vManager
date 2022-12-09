@@ -3,7 +3,7 @@ Rules are stored in events. Fore more information, please see vevent.py document
 
 @author Benjamin PAUMARD
 @version 1.0.0
-@version 03 December 2022
+@since 25 November 2022
 """
 
 class RRule:
@@ -12,7 +12,7 @@ class RRule:
     
     @author Benjamin PAUMARD
     @version 1.0.0
-    @version 03 December 2022
+    @since 25 November 2022
     """
     
     def __init__(self, frequency: str = '', until: str = '') -> None:

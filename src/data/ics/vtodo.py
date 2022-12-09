@@ -3,7 +3,7 @@ This class inherits from VBase.
 
 @author Benjamin PAUMARD
 @version 1.0.0
-@version 04 December 2022
+@since 25 November 2022
 """
 
 # importing libs
@@ -21,7 +21,7 @@ class VTodo(VBase):
 
     @author Benjamin PAUMARD
     @version 1.0.0
-    @version 04 December 2022
+    @since 25 November 2022
     """
 
     def __init__(self, timestamp: datetime, uid: str, dtstart: datetime, tzstart: str = '', summary: str = '', duration: str = '', status: str = '', valarms: list[VAlarm] = []) -> None:
@@ -120,8 +120,11 @@ class VTodo(VBase):
         f.write("BEGIN:VTODO\n")
         f.write(f"UID:{self.get_uid()}\n")
         f.write(f"DTSTAMP:{self.get_timestamp().strftime('%Y%m%dT%H%M%S')}\n")
+        
+        # if summary is not empty write it
         if (self.get_summary() != ''):
             f.write(f"SUMMARY:{self.get_summary()}\n")
+
         f.write(f"DTSTART:{self.get_tzstart()}:{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}\n")
         f.write(f"DURATION:{self.get_duration()}\n")
         f.write(f"STATUS:{self.get_status()}\n")

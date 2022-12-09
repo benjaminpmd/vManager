@@ -3,7 +3,7 @@ Address are stored as a list in a VCard. Fore more information, please see VCard
 
 @author Benjamin PAUMARD
 @version 1.0.0
-@version 25 November 2022
+@since 25 November 2022
 """
 
 class Address:
@@ -12,7 +12,7 @@ class Address:
     
     @author Benjamin PAUMARD
     @version 1.0.0
-    @version 25 November 2022
+    @since 25 November 2022
     """
     
     def __init__(self, address_types: list[str] = [], address: list[str] = [], preferred: bool = False) -> None:

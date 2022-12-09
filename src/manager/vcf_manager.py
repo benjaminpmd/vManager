@@ -50,10 +50,18 @@ class VCFManager:
         @param full_name the name to search.
         @return a VCard and its id.
         """
+        # for i in range size of vcards
         for i in range(len(self.__vcards)):
-            if (self.__vcards[i].get_full_name() ==full_name):
+            # check if the full name is the correct one
+            if (self.__vcards[i].get_full_name() == full_name):
+
+                # set the current index to edit
                 self.__current_card_index = i
+                
+                # return the vcard
                 return self.__vcards[i]
+        
+        # return None if not found
         return None
 
     def update_current_card(self, full_name: str = '', names: list[str] = [], org: str = '', title: str = '') -> None:
@@ -218,15 +226,20 @@ class VCFManager:
         @param path the path of the file to store.
         @param complete a boolean indicating if the page must be completed rendered.
         """
-        
+        # open the file
         with open(path, 'w') as f:
+            # write the commentary
             f.write("<!--vcards_export-->\n")
+            
+            # if complete page is requested, set the header
             if (complete):
                 f.write("<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n\t<title>Exported Contacts</title>\n</head>\n<body>\n")
 
+            # save all vcards
             for vcard in self.__vcards:
                 vcard.export_html(f)
 
+            # send the complete page
             if (complete):
                 f.write("</body>\n</html>\n")
 

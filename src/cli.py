@@ -1,10 +1,10 @@
 """
 This file contain the main function to run.
-This class
+This class contains the CLI version of the app.
 
 @author Benjamin PAUMARD
 @version 1.0.0
-@since  2022.04.11
+@since 11 November 2022
 """
 
 # !/usr/bin/env python
@@ -25,6 +25,14 @@ from data.vcf.vcard import VCard
             
 
 class CLI:
+    """
+    This class contains the CLI version of the app.
+    All the method for formatting are stored in this class.
+
+    @author Benjamin PAUMARD
+    @version 1.0.0
+    @since 11 November 2022
+    """
     def __init__(self, app_name: str, app_version: str) -> None:
         self.__app_name: str = app_name
         self.__app_version: str = app_version

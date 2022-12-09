@@ -17,7 +17,7 @@ class VCalendar:
     
     @author Benjamin PAUMARD
     @version 1.0.0
-    @version 25 November 2022
+    @since 04 December 2022
     """
     
     def __init__(self, vevents: list[VEvent] = [], vtodos: list[VTodo] = []) -> None:

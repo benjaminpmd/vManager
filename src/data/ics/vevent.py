@@ -3,7 +3,7 @@ This class inherits from VBase.
 
 @author Benjamin PAUMARD
 @version 1.0.0
-@version 04 December 2022
+@since 25 November 2022
 """
 
 # importing libs
@@ -22,7 +22,7 @@ class VEvent(VBase):
 
     @author Benjamin PAUMARD
     @version 1.0.0
-    @version 04 December 2022
+    @since 25 November 2022
     """
 
     def __init__(self, timestamp: datetime, uid: str, dtstart: datetime, dtend: datetime, tzstart: str = '',  tzend: str = '', summary: str = '', location: str = '', description: str = '', status: str = '', valarms: list[VAlarm] = [], rules: list[RRule] = []) -> None:
@@ -168,18 +168,26 @@ class VEvent(VBase):
         f.write("BEGIN:VEVENT\n")
         f.write(f"UID:{self.get_uid()}\n")
         f.write(f"DTSTAMP:{self.get_timestamp().strftime('%Y%m%dT%H%M%S')}\n")
+        
+        # if summary is not empty write it
         if (self.get_summary() != ''):
             f.write(f"SUMMARY:{self.get_summary()}\n")
         
+        # write the start time
         f.write(f"DTSTART:{self.get_tzstart()}:{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}\n")
         
+        # write the ending time
         f.write(f"DTEND:{self.get_tzend()}:{self.get_dtend().strftime('%Y%m%dT%H%M%S')}\n")
+        
+        # if location is not empty write it
         if (self.get_location() != ''):
             f.write(f"LOCATION:{self.get_location()}\n")
         
+        # if description is not empty write it
         if (self.get_description() != ''):
             f.write(f"DESCRIPTION:{self.get_location()}\n")
 
+        # if status is not empty write it
         if (self.get_status() != ''):
             f.write(f"STATUS:{self.get_status()}\n")
 
@@ -205,6 +213,7 @@ class VEvent(VBase):
 
         @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
         """
+        # write the line with the data
         f.write(
             f"vevent,{self.get_timestamp().strftime('%Y%m%dT%H%M%S')},{self.get_uid()},{self.get_summary()},{self.get_dtstart().strftime('%Y%m%dT%H%M%S')},{self.get_status()}\n")
 

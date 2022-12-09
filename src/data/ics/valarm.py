@@ -3,7 +3,7 @@ Alarm are stored as a list in a VEvent. Fore more information, please see vevent
 
 @author Benjamin PAUMARD
 @version 1.0.0
-@version 25 November 2022
+@since 25 November 2022
 """
 
 from io import TextIOWrapper
@@ -15,7 +15,7 @@ class VAlarm:
     
     @author Benjamin PAUMARD
     @version 1.0.0
-    @version 25 November 2022
+    @since 25 November 2022
     """
     
     def __init__(self, trigger: str, description: str, action: str) -> None:

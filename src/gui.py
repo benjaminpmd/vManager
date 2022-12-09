@@ -6,6 +6,10 @@ The GUI allow to open an ICS or VCF file and modify it.
 @since 05 December 2022
 """
 
+# !/usr/bin/env python
+
+# -*- coding: utf-8 -*-
+
 from datetime import datetime
 import os
 
@@ -189,7 +193,6 @@ class GUI(tk.Tk):
         if self.__filetype.startswith("export"):
             messagebox.showwarning(f"Cannot save - {config.APP_NAME}", "You are viewing an exported file.")
             return
-
         
         # set the files types to use
         filetypes: tuple = (
@@ -290,14 +293,20 @@ class GUI(tk.Tk):
 
         # if is a VCF, then use the vcf manager
         if (filename.endswith('.csv') or filename.endswith('.CSV')):
+            
+            # check for the type of the exported file
             with open(filename, 'r') as f:
+                # read the line
                 line: str = f.readline()
+
+                # check if the exported file is vcards or calendar
                 if line.startswith("type"):
                     export_type = "ics"
                 
                 elif line.startswith("full name"):
                     export_type = "vcf"
             
+            # if the exported file is a VCF
             if export_type == 'vcf':
                 try:
                     self.__vcf.import_from_file(filename)
@@ -305,6 +314,7 @@ class GUI(tk.Tk):
                 except:
                     messagebox.showinfo(f"Corrupted file - {config.APP_NAME}", "The file you are trying to open cannot be read by the application.")
 
+            # else if the exported type is ICS
             elif export_type == 'ics':
                 try:
                     self.__ics.import_from_file(filename)
@@ -359,8 +369,8 @@ class GUI(tk.Tk):
         @param export_type the type to export (HTML or CSV).
         @param full_html_page wether the HTML generated page should use only microformat or complete page rendering.
         """
+        
         # set the files types to use
-
         if self.__filetype.startswith("export"):
             messagebox.showwarning(f"Cannot save - {config.APP_NAME}", "You are viewing an exported file.")
             return

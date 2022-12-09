@@ -3,12 +3,11 @@ VEvents and VTodo herits from this class.
 
 @author Benjamin PAUMARD
 @version 1.0.0
-@version 25 November 2022
+@since 25 November 2022
 """
 
 # importing libs
 from datetime import datetime
-
 from data.ics.valarm import VAlarm
 
 
@@ -18,7 +17,7 @@ class VBase:
 
     @author Benjamin PAUMARD
     @version 1.0.0
-    @version 25 November 2022
+    @since 25 November 2022
     """
 
     def __init__(self, timestamp: datetime, uid: str,  dtstart: datetime, tzstart: str = '', summary: str = '', valarms: list[VAlarm] = []) -> None:

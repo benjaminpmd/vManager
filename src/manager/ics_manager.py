@@ -90,7 +90,8 @@ class ICSManager:
         In the case the event does not exist, return None.
         
         @param summary the event summary.
-        @return the VEvent corresponding"""
+        @return the VEvent corresponding.
+        """
         for i in range(len(self.get_vtodos())):
             # check for each event if the summary is the same
             if (self.get_vtodos()[i].get_summary() == summary):
@@ -138,6 +139,7 @@ class ICSManager:
 
         @param path the path of the file to read.
         """
+        # reset the content of the calendar
         self.__vcalendar.get_vevents().clear()
         self.__vcalendar.get_vtodos().clear()
         # open the file
@@ -161,10 +163,13 @@ class ICSManager:
         
         @param path the path of the file to import.
         """
+        # reset the calendar
         self.__vcalendar.get_vevents().clear()
         self.__vcalendar.get_vtodos().clear()
 
         with open(path, 'r') as f:
+
+            # if the opened file is an HTML file
             if path.endswith(".html"):
 
                 # init the lines of the vcard
@@ -177,20 +182,27 @@ class ICSManager:
                     line = line.replace("        ", '')
                     line = line.replace("    ", '')
                     lines.append(line)
-                
+
+                # build calendar
                 self.__vcalendar = self.__builder.build_from_html(lines)
             
+            # if the opened file is an HTML file
             elif path.endswith(".csv"):
 
                 # init the lines of the vcard
                 lines: list[str] = []
+                
                 # read each line of the file
                 for line in f:
+                    
                     # replace return to line with empty string
                     line = line.replace("\n", '')
+                    
+                    # append if not the header line
                     if not line.startswith("type"):
                         lines.append(line)
-
+                
+                # build the calendar
                 self.__vcalendar = self.__builder.build_from_csv(lines)
 
     def save(self, path: str = '') -> None:
@@ -203,6 +215,7 @@ class ICSManager:
         if path == '':
             path = self.__path
 
+        # save the file
         with open(path, 'w') as f:
             self.__vcalendar.save(f)
 
