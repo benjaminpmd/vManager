@@ -33,7 +33,7 @@ class GUI(tk.Tk):
     def __init__(self) -> None:
         """! Constructor of the GUI class"""
         # init super
-        super().__init__()
+        super().__init__(screenName='')
 
         # set the colors
         self.__fg_color: str = "white"
