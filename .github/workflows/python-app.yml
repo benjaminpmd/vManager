@@ -31,7 +31,6 @@ jobs:
     - name: Test commands
       run: |
         python ./src/cli.py
-        python ./src/gui.py
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
