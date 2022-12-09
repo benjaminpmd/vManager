@@ -266,6 +266,7 @@ def main(argv: list) -> None:
                 print(
                     "It seems your parameters are not correct, use -h or --help for more informations.")
         case 3:
+            # case there are 3 arguments
             if argv[1] == "-d":
                 cli.print_dir_explorer(argv[2])
             
@@ -281,6 +282,7 @@ def main(argv: list) -> None:
                     print("Incorrect file input.")
         
         case 5:
+            # case there are 5 arguments
             if (argv[1] == "-i") and (argv[3] == "-h"):
                 print(cli.export_file(argv[2], argv[4], 'HTML'))
             
@@ -288,6 +290,7 @@ def main(argv: list) -> None:
                 print(cli.export_file(argv[2], argv[4], 'CSV'))
 
         case 6:
+            # case there are 6 arguments
             if (argv[1] == "-i") and (argv[3] == "-h"):
                 if (argv[5] == "-p"):
                     print(cli.export_file(argv[2], argv[4], 'HTML', True))
