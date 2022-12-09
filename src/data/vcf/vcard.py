@@ -52,12 +52,27 @@ class VCard:
         return f"VCardObject=[version = {self.__version}, names = {self.__names}, \nfull_name = {self.__full_name}, \norg = {self.__org}, \ntitle = {self.__title}, \naddresses = {self.__addresses}, \nemails = {self.__emails} \nphones = {self.__phones} \nnote = {self.__note} \ncategories = {self.__categories}]"
 
     def get_version(self) -> float:
+        """! Get the version.
+        The version can be 2.1, 3.0, or 4.0.
+        
+        @return the version.
+        """
         return self.__version
 
     def set_version(self, version: float) -> None:
+        """! Set the version.
+        The version can be 2.1, 3.0, or 4.0.
+        
+        @param version the version.
+        """
         self.__version = version
 
     def get_names(self) -> list[str]:
+        """! Get the list of the names.
+        All names are stored here, full name also exist as single string.
+        
+        @return the names of the person.
+        """
         return self.__names
 
     def set_names(self, names: list[str]) -> None:
@@ -69,54 +84,139 @@ class VCard:
         self.__names = names
 
     def add_name(self, name) -> None:
+        """! Get the list of the names.
+        All names are stored here, full name also exist as single string.
+        
+        @return the names of the person.
+        """
         self.__names.append(name)
 
     def get_full_name(self) -> str:
+        """! Get the full name.
+        The full name is a str.
+        
+        @return the full name of the card.
+        """
         return self.__full_name
 
     def set_full_name(self, full_name: str) -> None:
+        """! Set the full name.
+        The full name is a str.
+        
+        @param full_name the full name of the card.
+        """
         self.__full_name = full_name
 
     def get_org(self) -> str:
+        """! Get the org of the card.
+        The org is a str.
+        
+        @return the org of the card.
+        """
         return self.__org
 
     def set_org(self, org: str) -> None:
+        """! Set the org of the card.
+        The org is a str.
+        
+        @param org the org of the card.
+        """
         self.__org = org
 
     def get_title(self) -> str:
+        """! Get the title of the card.
+        The title is a str.
+        
+        @return the title of the card.
+        """
         return self.__title
 
     def set_title(self, title: str) -> None:
+        """! Set the title of the card.
+        The title is a str.
+        
+        @param title the title of the card.
+        """
         self.__title = title
 
     def get_addresses(self) -> list[Address]:
+        """! Get the list of the addresses.
+        All addresses are stored here.
+        
+        @return the addresses of the person.
+        """
         return self.__addresses
 
     def add_address(self, address: Address) -> None:
+        """! Add element to the list of the addresses.
+        All addresses are stored here.
+        
+        @param address an Address object.
+        """
         self.__addresses.append(address)
 
     def get_emails(self) -> list[Email]:
+        """! Get the list of the emails.
+        All emails are stored here.
+        
+        @return the emails of the person.
+        """
         return self.__emails
 
     def add_email(self, email: Email) -> None:
+        """! Add element to the list of the emails.
+        All emails are stored here.
+        
+        @param email an Email object.
+        """
         self.__emails.append(email)
 
     def get_phones(self) -> list[Phone]:
+        """! Get the list of the phones.
+        All phones are stored here.
+        
+        @return the phones of the person.
+        """
         return self.__phones
 
     def add_phone(self, phone: Phone) -> None:
+        """! Add element to the list of the phones.
+        All phones are stored here.
+        
+        @param phone an Phone object.
+        """
         self.__phones.append(phone)
 
     def get_note(self) -> str:
+        """! Get the note of the card.
+        The note is a str.
+        
+        @return the note of the card.
+        """
         return self.__note
 
     def set_note(self, note: str) -> None:
+        """! Set the note of the card.
+        The note is a str.
+        
+        @param note the note of the card.
+        """
         self.__note = note
 
     def get_categories(self) -> list[str]:
+        """! Get the list of the categories.
+        All categories are stored here.
+        
+        @return the categories of the person.
+        """
         return self.__categories
 
     def add_category(self, category: str) -> None:
+        """! Add element to the list of the categories.
+        All categories are stored here.
+        
+        @param category a string representing a category.
+        """
         self.__categories.append(category)
 
     def save(self, f) -> None:
