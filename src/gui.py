@@ -19,8 +19,8 @@ from tkinter import messagebox
 
 from config import config
 
-from manager.vcf_manager import VCFManager
-from manager.ics_manager import ICSManager
+from process.manager.vcf_manager import VCFManager
+from process.manager.ics_manager import ICSManager
 
 class GUI(tk.Tk):
     """! Class that contains the GUI.

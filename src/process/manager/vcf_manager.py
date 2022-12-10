@@ -7,7 +7,7 @@ Features to export contacts to a vcf file are also available here.
 @since 03 December 2022
 """
 from data.vcf.vcard import VCard
-from builder.vcard_builder import VCardBuilder
+from process.builder.vcard_builder import VCardBuilder
 
 
 class VCFManager:

@@ -19,8 +19,8 @@ import sys
 import config.config as config
 
 # importing modules needed for the CLI to run correctly
-from manager.ics_manager import ICSManager
-from manager.vcf_manager import VCFManager
+from process.manager.ics_manager import ICSManager
+from process.manager.vcf_manager import VCFManager
 from data.vcf.vcard import VCard
             
 

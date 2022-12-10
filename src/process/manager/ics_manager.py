@@ -9,7 +9,7 @@ from datetime import datetime
 from data.ics.vevent import VEvent
 from data.ics.vtodo import VTodo
 from data.ics.vcalendar import VCalendar
-from builder.vcalendar_builder import VCalendarBuilder
+from process.builder.vcalendar_builder import VCalendarBuilder
 
 class ICSManager:
     """! Class that the main manager of an ICS file.
