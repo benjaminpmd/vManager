@@ -99,6 +99,7 @@ class VCalendar:
         # write the beginning of the file
         f.write("BEGIN:VCALENDAR\n")
         f.write(f"VERSION:2.0\n")
+        f.write(f"PRODID:-//XYZproduct//EN\n")
 
         # for each vevent, write it
         for vevent in self.__vevents:

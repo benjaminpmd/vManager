@@ -91,7 +91,8 @@ class VCalendarBuilder:
                     case "VEVENT":
                         
                         # create an empty event
-                        vevent = VEvent(datetime.now(), '', datetime.now(), datetime.now())
+                        vevent = VEvent(datetime.now(), '', datetime.now(), datetime.now(), valarms=[])
+                        i += 1
                         
                         # while the line does not indicate the end of an event and the index is not over the number of line
                         while (i < count and lines[i] != "END:VEVENT"):
@@ -101,7 +102,6 @@ class VCalendarBuilder:
                             
                             # increment for next iteration
                             i += 1
-
                             # match the data key of the line
                             match data[0].upper():
                                 
@@ -171,41 +171,42 @@ class VCalendarBuilder:
                                     # add the rule to the event
                                     vevent.add_rrule(RRule(freq, until))                                    
                                          
-                                # case where this is an alarm for the event
-                                case "BEGIN:ALARM":
-
-                                    # create an empty alarm
-                                    valarm: VAlarm = VAlarm('', '', '')
-                                    
-                                    # while it is not the end of the alarm
-                                    while (i < count and lines[i] != "END:VALARM"):
-                                        
-                                        # split the line
-                                        data = self.split(lines[i])
-                                        
-                                        #increment
+                                # case where this is the status of the todo
+                                case "BEGIN":
+                                    if data[1] == "VALARM":
+                                        valarm: VAlarm = VAlarm('', '', '')
                                         i += 1
-                                        
-                                        # match the data key of the line
-                                        match data[0].upper():
+                                        while (i < count and lines[i] != "END:VALARM"):
 
-                                            # case where the line is the trigger of the alarm
-                                            case "TRIGGER":
-                                                valarm.set_trigger(data[1])
+                                            # split the line
+                                            data = self.split(lines[i])
 
-                                            # case where the line is the description of the alarm
-                                            case "DESCRIPTION":
-                                                valarm.set_description(data[1])
+                                            # increment
+                                            i += 1
 
-                                            # case where the line is the action of the alarm
-                                            case "ACTION":
-                                                valarm.set_action(data[1])
+                                            # match the data key of the line
+                                            match data[0].upper():
+
+                                                # case where the line is the trigger of the alarm
+                                                case "TRIGGER":
+                                                    valarm.set_trigger(data[1])
+
+                                                # case where the line is the description of the alarm
+                                                case "DESCRIPTION":
+                                                    valarm.set_description(data[1])
+
+                                                # case where the line is the action of the alarm
+                                                case "ACTION":
+                                                    valarm.set_action(data[1])
+
+                                        # add the alarm to the todo
+                                        vevent.add_valarm(valarm)
+
+                                        # increment
+                                        i += 1
                                     
-                                    # add the alarm to the event
-                                    vevent.add_valarm(valarm)
-
-                                    # increment
-                                    i += 1
+                                    else:
+                                        i += 1
                         # once read, append the event to the calendar
                         vcalendar.add_vevent(vevent)
                         
@@ -216,7 +217,8 @@ class VCalendarBuilder:
                     case "VTODO":
                         
                         # create a VTodo object
-                        vtodo = VTodo(datetime.now(), '', datetime.now())
+                        vtodo = VTodo(datetime.now(), '', datetime.now(), valarms=[])
+                        i+=1
 
                         # while the vtodo is not complete
                         while (i < count and lines[i] != "END:VTODO"):
@@ -268,37 +270,42 @@ class VCalendarBuilder:
                                     vtodo.set_duration(data[1])
 
                                 # case where this is the status of the todo
-                                case "BEGIN:ALARM":
-                                    valarm: VAlarm = VAlarm('', '', '')
+                                case "BEGIN":
+                                    if data[1] == "VALARM":
+                                        valarm: VAlarm = VAlarm('', '', '')
+                                        i += 1
+                                        while (i < count and lines[i] != "END:VALARM"):
 
-                                    while (i < count and lines[i] != "END:VALARM"):
-                                        
-                                        # split the line
-                                        data = self.split(lines[i])
-                                        
+                                            # split the line
+                                            data = self.split(lines[i])
+
+                                            # increment
+                                            i += 1
+
+                                            # match the data key of the line
+                                            match data[0].upper():
+
+                                                # case where the line is the trigger of the alarm
+                                                case "TRIGGER":
+                                                    valarm.set_trigger(data[1])
+
+                                                # case where the line is the description of the alarm
+                                                case "DESCRIPTION":
+                                                    valarm.set_description(data[1])
+
+                                                # case where the line is the action of the alarm
+                                                case "ACTION":
+                                                    valarm.set_action(data[1])
+
+                                        # add the alarm to the todo
+                                        vtodo.add_valarm(valarm)
+
                                         # increment
                                         i += 1
-                                        
-                                        # match the data key of the line
-                                        match data[0].upper():
 
-                                            # case where the line is the trigger of the alarm
-                                            case "TRIGGER":
-                                                valarm.set_trigger(data[1])
+                                    else:
+                                        i += 1
 
-                                            # case where the line is the description of the alarm
-                                            case "DESCRIPTION":
-                                                valarm.set_description(data[1])
-
-                                            # case where the line is the action of the alarm
-                                            case "ACTION":
-                                                valarm.set_action(data[1])
-                                    
-                                    # add the alarm to the todo
-                                    vtodo.add_valarm(valarm)
-
-                                    # increment
-                                    i += 1
                         # add the todo to the calendar
                         vcalendar.add_vtodo(vtodo)
 

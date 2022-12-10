@@ -1,5 +1,4 @@
-"""
-This file contain the main function to run.
+"""! This file contain the main function to run.
 This class contains the CLI version of the app.
 
 @author Benjamin PAUMARD
@@ -25,8 +24,7 @@ from data.vcf.vcard import VCard
             
 
 class CLI:
-    """
-    This class contains the CLI version of the app.
+    """! This class contains the CLI version of the app.
     All the method for formatting are stored in this class.
 
     @author Benjamin PAUMARD

@@ -195,9 +195,9 @@ class GUI(tk.Tk):
             return
         
         # set the files types to use
-        filetypes: tuple = (
-            ('HTML files', '*.html'),
-            ('CSV files', '*.csv')
+        filetypes = (
+            ('Calendar files', '*.ics'),
+            ('Card files', '*.vcf')
         )
 
         # ask for the filename

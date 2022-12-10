@@ -84,8 +84,8 @@ class VAlarm:
 
         @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
         """
-        f.write("BEGIN:VALRM\n")
+        f.write("BEGIN:VALARM\n")
         f.write(f"TRIGGER:{self.__trigger}\n")
         f.write(f"DESCRIPTION:{self.__description}\n")
         f.write(f"ACTION:{self.__action}\n")
-        f.write("BEGIN:VALRM")
+        f.write("END:VALARM\n")

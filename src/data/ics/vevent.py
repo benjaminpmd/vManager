@@ -17,7 +17,7 @@ from data.ics.valarm import VAlarm
 
 
 class VEvent(VBase):
-    """! Class that contains the elements of an events.
+    """! Class that contains the elements of an event.
     This class inherits from VBase.
 
     @author Benjamin PAUMARD
@@ -173,12 +173,18 @@ class VEvent(VBase):
         if (self.get_summary() != ''):
             f.write(f"SUMMARY:{self.get_summary()}\n")
         
-        # write the start time
-        f.write(f"DTSTART:{self.get_tzstart()}:{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}\n")
-        
+        # write the starting time
+        if self.get_tzstart() != '':
+            f.write(f"DTSTART;TZID={self.get_tzstart()}:{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}\n")
+        else:
+            f.write(f"DTSTART:{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}\n")
+
         # write the ending time
-        f.write(f"DTEND:{self.get_tzend()}:{self.get_dtend().strftime('%Y%m%dT%H%M%S')}\n")
-        
+        if self.get_tzend() != '':
+            f.write(f"DTEND;TZID={self.get_tzend()}:{self.get_dtend().strftime('%Y%m%dT%H%M%S')}\n")
+        else:
+            f.write(f"DTEND:{self.get_dtend().strftime('%Y%m%dT%H%M%S')}\n")
+
         # if location is not empty write it
         if (self.get_location() != ''):
             f.write(f"LOCATION:{self.get_location()}\n")
@@ -203,7 +209,6 @@ class VEvent(VBase):
         # print each alarm
         for alarm in self.get_valarms():
             alarm.save(f)
-
         # write the end of the vevent
         f.write(f"END:VEVENT\n")
 

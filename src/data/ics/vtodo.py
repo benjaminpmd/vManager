@@ -16,7 +16,7 @@ from data.ics.vbase import VBase
 
 
 class VTodo(VBase):
-    """! Class that contains the elements of an events.
+    """! Class that contains the elements of a todo.
     This class inherits from VBase.
 
     @author Benjamin PAUMARD
@@ -25,7 +25,7 @@ class VTodo(VBase):
     """
 
     def __init__(self, timestamp: datetime, uid: str, dtstart: datetime, tzstart: str = '', summary: str = '', duration: str = '', status: str = '', valarms: list[VAlarm] = []) -> None:
-        """! Class used to store an event.
+        """! Class used to store an todo.
         This class inherit from the VBase one.
 
         @param timestamp the creation date of the element.
@@ -34,8 +34,8 @@ class VTodo(VBase):
         @param tzstart the timezone of the beginning datetime (optional).
         @param summary the description of the element (optional).
         @param duration the duration of the task (optional).
-        @param status the status of the event (optional).
-        @param valarms the alarms of the event (optional).
+        @param status the status of the todo (optional).
+        @param valarms the alarms of the todo (optional).
         """
 
         # init the inherit class
@@ -63,55 +63,55 @@ class VTodo(VBase):
         self.__duration = duration
 
     def get_location(self) -> str:
-        """! Method to get the location of the event.
+        """! Method to get the location of the todo.
         The location is a string.
 
-        @return the location of the event.
+        @return the location of the todo.
         """
         return self.__location
 
     def set_location(self, location: str) -> None:
-        """! Method to set the location of the event.
+        """! Method to set the location of the todo.
         The location is a string.
 
-        @param location the location of the event.
+        @param location the location of the todo.
         """
         self.__location = location
 
     def get_description(self) -> str:
-        """! Method to get the description of the event.
+        """! Method to get the description of the todo.
         The description is a string.
 
-        @return the description of the event.
+        @return the description of the todo.
         """
         return self.__description
 
     def set_description(self, description: str) -> None:
-        """! Method to set the description of the event.
+        """! Method to set the description of the todo.
         The description is a string.
 
-        @param description the description of the event.
+        @param description the description of the todo.
         """
         self.__description = description
 
     def get_status(self) -> str:
-        """! Method to get the status of the event.
+        """! Method to get the status of the todo.
         The status is a string.
 
-        @return the status of the event.
+        @return the status of the todo.
         """
         return self.__status
 
     def set_status(self, status: str) -> None:
-        """! Method to set the status of the event.
+        """! Method to set the status of the todo.
         The status is a string.
 
-        @param status the status of the event.
+        @param status the status of the todo.
         """
         self.__status = status
 
     def save(self, f: TextIOWrapper) -> None:
-        """! Method that save the vevent into a file.
+        """! Method that save the vtodo into a file.
         All alarms and rules will be saved as well.
 
         @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
@@ -125,7 +125,11 @@ class VTodo(VBase):
         if (self.get_summary() != ''):
             f.write(f"SUMMARY:{self.get_summary()}\n")
 
-        f.write(f"DTSTART:{self.get_tzstart()}:{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}\n")
+        if self.get_tzstart() != '':
+            f.write(f"DTSTART;TZID={self.get_tzstart()}:{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}\n")
+        else:
+            f.write(f"DTSTART:{self.get_dtstart().strftime('%Y%m%dT%H%M%S')}\n")
+        
         f.write(f"DURATION:{self.get_duration()}\n")
         f.write(f"STATUS:{self.get_status()}\n")
 
@@ -133,11 +137,11 @@ class VTodo(VBase):
         for alarm in self.get_valarms():
             alarm.save(f)
 
-        # write the end of the vevent
+        # write the end of the vtodo
         f.write(f"END:VTODO\n")
 
     def export_csv(self, f: TextIOWrapper) -> None:
-        """! Method that export an event into a CSV.
+        """! Method that export an todo into a CSV.
         The file used may be opened in the calendar class.
 
         @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.
@@ -146,7 +150,7 @@ class VTodo(VBase):
             f"vtodo,{self.get_timestamp().strftime('%Y%m%dT%H%M%S')},{self.get_uid()},{self.get_summary()},{self.get_dtstart().strftime('%Y%m%dT%H%M%S')},{self.get_status()}\n")
 
     def export_html(self, f: TextIOWrapper) -> None:
-        """! Method that export an event into a HTML file.
+        """! Method that export an todo into a HTML file.
         The file used may be opened in the calendar class.
 
         @param f the file wrapper to use. It must be opened as 'w' or at least 'a'.

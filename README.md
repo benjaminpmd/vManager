@@ -2,59 +2,75 @@
 
 ## Description
 
-Ce projet est réalisé dans le carde de la 3eme année de licence informatique à CY Cergy Paris Université. L'objectif de ce dernier est la conception et la réalisation d'un lecteur de fichier vcf et ics. L'application fonctionne de deux manières, la première en ligne de commande permet de visualiser et exporter un carnet de contact ou un calendrier. La seconde version dotée d'une interface graphique propose les mêmes options que la première, mais également la possibilités de modifier les contacts et éléments du calendrier ainsi que la visualisation des fichiers exportés.
+This project is carried out within the framework of the 3rd year of computer license at CY Cergy Paris University. The objective of the latter is the design and production of a vcf and ics file reader. The application works in two ways, the first in the command line allows you to view and export a contact book or a calendar. The second version with a graphical interface offers the same options as the first, but also the possibility of modifying contacts and calendar items as well as viewing exported files.
 
-## Fonctionnalités
+## Features
 
-Au travers des deux versions de l'application, on peut retrouver devers fonctionnalités. La version de l'application en ligne de commande propose moins d'options que la version utilisant une interface graphique.
+Through the two versions of the application, we can find the functionalities. The command line app version has fewer options than the GUI version.
 
-### Version CLI
+### CLI version
 
-Voici les fonctionnalités proposées par la version en ligne de commande :
+Here are the features offered by the command line version:
 
-- Référencement des fichiers `VCF`/`ICS` dans un répertoire
-- Lecture de fichiers `VCF`/`ICS`
-- Export de fichiers `VCF`/`ICS` aux formats `HTML` et `CSV`
+- Listing `VCF`/`ICS` files in a directory
 
-Il est possible de choisir entre deux modes d'export pour les fichiers HTML, le premier exportant simplement les données en utilisant les microformats, le second générant une page HTML complète.
+- Reading `VCF`/`ICS` files
 
-### Version GUI
+- Export of `VCF`/`ICS` files in `HTML` and `CSV` formats
 
-Voici les fonctionnalités proposées par la version Interface Graphique :
+It is possible to choose between two export modes for HTML files, the first simply exporting the data using microformats, the second generating a complete HTML page.
 
-- Lecture de fichiers `VCF`/`ICS`
-- Modification de fichiers `VCF`/`ICS`
-- Import de fichiers HTML/CSS exporté par l'application
-- Export de fichiers `VCF`/`ICS` aux formats `HTML` et `CSV`
+### GUI version
 
-Tout comme la version en ligne de commandes, la version graphique propose deux modes d'export d'un fichier HTML, le premier en exportant simplement les données au format HTML en utilisant les microformats, le second, en exportant les mêmes informations mais dans une page HTML complète.
+Here are the features offered by the Graphical Interface version:
 
-## Installation
+- Reading `VCF`/`ICS` files
 
-> Ce projet requière Python 3.10 ou supérieur.
+- Editing `VCF`/`ICS` files
 
-Cette application utilise la librairie `Tkinter` afin de produire un affichage graphique. Vérifiez que cette librairie est bien installée sur votre machine. Cette librairie est installée par défaut sur windows mais pas sur Linux ou MacOS. Dans ce cas, vous pouvez l'installer de la manière suivante :
+- Import of HTML/CSS files exported by the application
+
+- Export of `VCF`/`ICS` files in `HTML` and `CSV` formats
+
+Just like the command line version, the graphical version offers two modes for exporting an HTML file, the first by simply exporting the data in HTML format using microformats, the second by exporting the same information, but in a complete HTML page.
+
+## Facility
+
+> This project requires Python 3.10 or higher.
+
+This application uses the `Tkinter` library to produce a graphical display. Check that this library is installed on your machine. This library is installed by default on windows, but not on Linux or MacOS. In this case, you can install it as follows:
 
 ```sh
-# installer Tkinter sur Linux ou MacOS
+
+
+# install Tkinter on Linux or MacOS
+
+
 apt install python3-tk
+
+
 ```
 
-## Utilisation
+## Use
 
-Le fonctionnement de l'application diffère selon la version utilisée. Voici ci-dessous les différentes utilisations des versions de l'application.
+The operation of the application differs depending on the version used. Here below are the different uses of the versions of the application.
 
-### Version CLI
+### CLI version
 
-Afin de lancer l'application, il est nécessaire d'appeler le script correspondant de la manière suivante : `python3 src/cli.py` (utilisez `python src/cli.py` sur Windows). On y place ensuite les arguments en fonction de ce que l'on souhaite réaliser :
+In order to launch the application, it is necessary to call the corresponding script as follows: `python3 src/cli.py` (use `python src/cli.py` on Windows). We then place the arguments according to what we want to achieve:
 
-- `-h` ou `--help` permet d'obtenir de l'aide
-- `-d path/to/directory` permet de visualiser les fichiers `VCF`/`ICS` dans un répertoire
-- `-i path/to/file` permet de visualiser le contenu d'un fichier.
-- `-i path/to/input_file -c path/to/output_file` permet d'exporter un fichier au format `CSV`.
-- `-i path/to/input_file -h path/to/output_file` permet d'exporter un fichier au format `HTML`.
-- `-i path/to/input_file -h path/to/output_file -p` permet d'exporter un fichier au format `HTML` en générant une page complète.
+- `-h` or `--help` provides help
 
-### Version GUI
+- `-d path/to/directory` allows to view `VCF`/`ICS` files in a directory
 
-La version GUI se lance en appelant le script dédié comme ceci : `python3 src/gui.py` (utilisez `python src/gui.py` sur Windows)
+- `-i path/to/file` allows to view the contents of a file.
+
+- `-i path/to/input_file -c path/to/output_file` allows to export a file in `CSV` format.
+
+- `-i path/to/input_file -h path/to/output_file` allows to export a file in `HTML` format.
+
+- `-i path/to/input_file -h path/to/output_file -p` allows you to export a file in `HTML` format by generating a complete page.
+
+### GUI version
+
+The GUI version is launched by calling the dedicated script like this: `python3 src/gui.py` (use `python src/gui.py` on Windows)
