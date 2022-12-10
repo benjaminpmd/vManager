@@ -34,7 +34,7 @@ Here are the features offered by the Graphical Interface version:
 
 Just like the command line version, the graphical version offers two modes for exporting an HTML file, the first by simply exporting the data in HTML format using microformats, the second by exporting the same information, but in a complete HTML page.
 
-## Facility
+## Installation
 
 > This project requires Python 3.10 or higher.
 
