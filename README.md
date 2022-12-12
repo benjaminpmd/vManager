@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is carried out within the framework of the 3rd year of computer license at CY Cergy Paris University. The objective of the latter is the design and production of a vcf and ics file reader. The application works in two ways, the first in the command line allows you to view and export a contact book or a calendar. The second version with a graphical interface offers the same options as the first, but also the possibility of modifying contacts and calendar items as well as viewing exported files.
+This project is carried out for the 3rd year of computer license at CY Cergy Paris University. The objective of the latter is the design and production of a vcf and ics file reader. The application works in two ways, the first in the command line allows you to view and export a contact book or a calendar. The second version with a graphical interface offers the same options as the first, but also the possibility of modifying contacts and calendar items as well as viewing exported files.
 
 ## Features
 
