@@ -2,13 +2,13 @@
 This file contains constants used across the application.
 
 @author Benjamin PAUMARD
-@version 1.0.0
+@version 1.0.1
 @since 25 November 2022
 """
 
 
 # version of the app
-VERSION: str = '1.0.0'
+VERSION: str = '1.0.1'
 
 # name of the app
 APP_NAME: str = 'vManager'

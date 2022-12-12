@@ -2,7 +2,7 @@
 VCards are managed through the VcfManager.
 
 @author Benjamin PAUMARD
-@version 1.0.0
+@version 1.0.1
 @since 25 November 2022
 """
 
@@ -21,7 +21,7 @@ class VCardBuilder:
     The class is used to create VCard objects.
     
     @author Benjamin PAUMARD
-    @version 1.0.0
+    @version 1.0.1
     @since 25 November 2022
     """
 
@@ -47,7 +47,7 @@ class VCardBuilder:
 
             # remove each empty element that may be in the file
             for i in range(len(elements)-1):
-                if elements[i] == '':
+                if i < len(elements) and elements[i] == '':
                     elements.pop(i)
             
             # get the title of the line
@@ -179,7 +179,7 @@ class VCardBuilder:
 
             # remove each empty element that may be in the file
             for i in range(len(elements)-1):
-                if elements[i] == '':
+                if i < len(elements) and elements[i] == '':
                     elements.pop(i)
             
             # get the title of the line
@@ -311,7 +311,7 @@ class VCardBuilder:
 
             # remove each empty element that may be in the file
             for i in range(len(elements)-1):
-                if elements[i] == '':
+                if i < len(elements) and elements[i] == '':
                     elements.pop(i)
             
             # get the title of the line
