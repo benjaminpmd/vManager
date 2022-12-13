@@ -43,11 +43,14 @@ Cette application utilise la librairie `Tkinter` afin de produire un affichage g
 ```sh
 
 
-# installer Tkinter sur Linux ou MacOS
+# installer Tkinter sur Linux
 
 
 apt install python3-tk
 
+# installer Tkinter sur MacOS
+
+brew install tkinter
 
 ```
 
