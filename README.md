@@ -43,8 +43,7 @@ This application uses the `Tkinter` library to produce a graphical display. Chec
 ```sh
 
 
-# install Tkinter on Linux
-
+# install Tkinter on Debian or Debian based Linux distro
 
 apt install python3-tk
 
@@ -52,6 +51,7 @@ apt install python3-tk
 
 brew install tkinter
 
+# or use you own package installer based on your OS
 ```
 
 ## Use
