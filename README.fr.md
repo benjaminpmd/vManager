@@ -43,8 +43,7 @@ Cette application utilise la librairie `Tkinter` afin de produire un affichage g
 ```sh
 
 
-# installer Tkinter sur Linux
-
+# installer Tkinter sur Debian ou sur une distribution Linux basée sur Debian
 
 apt install python3-tk
 
@@ -52,6 +51,7 @@ apt install python3-tk
 
 brew install tkinter
 
+# ou bien utilisez votre propre installateur de paquets
 ```
 
 ## Utilisation
