@@ -43,11 +43,14 @@ This application uses the `Tkinter` library to produce a graphical display. Chec
 ```sh
 
 
-# install Tkinter on Linux or MacOS
+# install Tkinter on Linux
 
 
 apt install python3-tk
 
+# install Tkinter on MacOS
+
+brew install tkinter
 
 ```
 
